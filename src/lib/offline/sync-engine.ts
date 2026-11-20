@@ -105,7 +105,7 @@ export async function flushOutboxAndPull(ziyaraId: string): Promise<boolean> {
 
     if (pending.length > 0) {
       const mutationsPayload = pending.map((m) => m.payload);
-      const { error: syncError } = await supabase.rpc('sync_member_batch', {
+      const { data: syncData, error: syncError } = await supabase.rpc('sync_member_batch', {
         p_ziyara_id: ziyaraId,
         p_mutations: mutationsPayload,
       });
@@ -114,7 +114,18 @@ export async function flushOutboxAndPull(ziyaraId: string): Promise<boolean> {
         return false;
       }
 
-      const idsToDelete = pending.map((p) => p.id!).filter(Boolean);
+      // Le serveur renvoie les mutations traitées (réussies OU rejetées définitivement).
+      // Une mutation rejetée est retirée de la file pour ne pas bloquer les suivantes.
+      const processed = new Set<string>(
+        ((syncData as { processed_ids?: string[] } | null)?.processed_ids ?? []).map(String)
+      );
+      const failed = (syncData as { failed?: unknown[] } | null)?.failed ?? [];
+      if (failed.length > 0) console.warn('[sync] mutations rejetées par le serveur', failed);
+
+      const idsToDelete = pending
+        .filter((p) => processed.has(p.clientMutationId))
+        .map((p) => p.id!)
+        .filter(Boolean);
       await offlineDb.outbox.bulkDelete(idsToDelete);
     }
 
