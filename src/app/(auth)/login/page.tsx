@@ -131,7 +131,7 @@ export default function LoginPage() {
                 placeholder={country === 'SN' ? '77 123 45 67' : '6 12 34 56 78'}
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="flex-1 h-12 px-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-base tabular-nums focus:outline-none focus:border-[var(--accent-primary)]"
+                className="flex-1 min-w-0 w-full h-12 px-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-base tabular-nums focus:outline-none focus:border-[var(--accent-primary)]"
               />
             </div>
           </div>
