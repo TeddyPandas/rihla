@@ -1,0 +1,28 @@
+[
+  {
+    "chapterNumber": 1,
+    "isSample": true,
+    "titleFr": "[EXEMPLE] Chapitre 1 — Titre à insérer",
+    "titleAr": "[نموذج] الفصل الأول — العنوان يوضع هنا",
+    "paragraphsFr": [
+      "[EXEMPLE] Ce texte est un espace réservé pour le premier chapitre de la biographie de Seydina Cheikh (Cheikh Ahmad Tidjani). Remplacez simplement les entrées du fichier src/content/biography-sample.json par votre texte validé.",
+      "[EXEMPLE] L'interface prend en charge les paragraphes longs, le réglage de la taille des caractères et le mode nuit pour une lecture apaisée à Fès."
+    ],
+    "paragraphsAr": [
+      "[نموذج] هذا النص مخصص للفصل الأول من سيرة سيدنا الشيخ أحمد التجاني رضي الله عنه. يرجى استبدال محتوى ملف src/content/biography-sample.json بالنص المعتمد لديكم.",
+      "[نموذج] تدعم هذه الواجهة القراءة المريحة بدون إنترنت مع إمكانية تكبير الخط والتبديل بين الوضع النهاري والليلي."
+    ]
+  },
+  {
+    "chapterNumber": 2,
+    "isSample": true,
+    "titleFr": "[EXEMPLE] Chapitre 2 — Titre à insérer",
+    "titleAr": "[نموذج] الفصل الثاني — العنوان يوضع هنا",
+    "paragraphsFr": [
+      "[EXEMPLE] Deuxième chapitre de démonstration. Ajoutez autant d'objets que nécessaire dans le tableau JSON pour structurer l'ensemble de l'ouvrage."
+    ],
+    "paragraphsAr": [
+      "[نموذج] نص تجريبي للفصل الثاني. يمكنكم إضافة أي عدد من الفصول داخل نفس الملف بنفس البنية."
+    ]
+  }
+]
