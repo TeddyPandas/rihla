@@ -22,12 +22,16 @@ Ce que cela implique (rien n'est développé aujourd'hui, l'application est pens
 - **Données :** la table `ziyaras` existe déjà et toutes les autres tables sont rattachées à un voyage ; il faudra un écran « Voyages » (créer, modifier, archiver) et ajouter un champ lieu / pays / fuseau horaire.
 - **Choix du voyage actif :** les écrans chargent aujourd'hui « le premier voyage actif » ; il faudra un sélecteur de voyage (gestionnaire et membres) et gérer un membre inscrit à plusieurs voyages.
 - **Membres par voyage :** un même numéro de téléphone peut participer à plusieurs voyages (le compte de connexion reste unique, la participation est par voyage) ; le gestionnaire choisit qui inscrire à quel voyage.
-- **Gestionnaires par voyage :** à décider : un gestionnaire l'est-il pour tous les voyages ou voyage par voyage ?
+- **Gestionnaires :** décidé le 21/11 : un gestionnaire l'est pour **tous les voyages** ; on peut en nommer ou en retirer à tout moment (déjà possible dans « Membres »).
 - **Dates et libellés en dur à rendre dynamiques :** sous-titre « 19 – 27 Décembre 2026 », bornes de dates des écrans, appli hors-ligne qui ne garde qu'un profil.
 - **Horaires de prière et fuseau :** table et fuseau actuellement propres à Fès (`Africa/Casablanca`) ; il faudra des horaires par lieu (calcul par coordonnées GPS, avec méthode adaptée au pays) et un fuseau par voyage.
 - **Report quotidien :** déjà calculé par voyage et selon son fuseau (`carry_over_all`), à garder tel quel.
 - **Historique :** pouvoir consulter un voyage terminé sans le mélanger au voyage en cours.
 
-Questions à poser le moment venu :
-- Un membre peut-il voir ses anciens voyages ?
-- Les zikr (modèles) peuvent-ils être copiés d'un voyage à l'autre ?
+Décisions prises le 21/11/2026 :
+- Un gestionnaire est le même pour tous les voyages (modifiable en nommant / retirant des gestionnaires).
+- Un membre peut revoir ses anciens voyages.
+
+Reste à trancher : les zikr (modèles) peuvent-ils être copiés d'un voyage à l'autre ?
+
+**Prochaine étape : réfléchir à l'implémentation le 22/11/2026.**
