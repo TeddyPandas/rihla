@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F4EEE1;--sf:#FBF8F1;--sf2:#ECE4D3;--ink:#1B2A22;--ink2:#56635A;--line:#DCD2BD;--pri:#1F4D3A;--onpri:#F8F3E7;--pris:#E1E9DD;--acc:#A8874A;--acct:#7A5D27;--hero:#1F4D3A;--onhero:#F8F3E7;--heroacc:#D9BC80;--ok:#2E6F48;--oks:#DFEDE3;--warn:#8A5D0E;--warns:#F3E6CC;--err:#9E3B2C;--errs:#F5DFD9;--scrim:rgba(20,30,25,.45)}
+body{margin:0;background:#E6E2D8;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--acct)}a:hover{color:var(--ink)}
+button{font:inherit;cursor:pointer}
+</style>
+</helmet>
+
+<section data-screen-label="01 Connexion" style="padding:64px;display:flex;flex-direction:column;gap:28px">
+  <h2 style="margin:0;font-size:24px;font-weight:600;color:#22251F">01 · Connexion en 2 étapes</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:56px">
+
+    <div data-screen-label="01a Numéro" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">01a · Numéro de téléphone</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;padding:8px 24px 40px;gap:28px">
+          <div style="display:flex;justify-content:flex-end"><span lang="ar" style="height:48px;padding:0 16px;border-radius:14px;border:1.5px solid var(--line);display:flex;align-items:center;font-size:16px;font-weight:500">العربية</span></div>
+          <div style="display:flex;flex-direction:column;gap:14px;padding-top:24px">
+            <svg width="48" height="48" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" stroke="var(--pri)" stroke-width="2"></circle><circle cx="22" cy="6" r="4.5" fill="var(--acc)"></circle></svg>
+            <div style="font-family:Amiri,serif;font-size:44px;line-height:1">Zikr</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:600;color:var(--acct)">Étape 1 sur 2</span>
+            <h1 style="margin:0;font-size:28px;font-weight:600">Connexion</h1>
+            <p style="margin:0;font-size:16px;line-height:1.55;color:var(--ink2)">Entrez le numéro de téléphone que vous avez communiqué au cheikh.</p>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:15px;font-weight:500">Numéro de téléphone
+            <div dir="ltr" style="display:flex;height:56px;border:2px solid var(--pri);border-radius:12px;background:var(--sf);overflow:hidden"><span style="padding:0 16px;display:flex;align-items:center;border-right:1.5px solid var(--line);font-size:17px;font-weight:600;background:var(--sf2)">+221</span><span style="padding:0 16px;display:flex;align-items:center;font-size:18px;letter-spacing:.04em">77 123 45 67</span></div>
+          </label>
+          <button style="height:56px;border:0;border-radius:14px;background:var(--pri);color:var(--onpri);font-size:17px;font-weight:600">Continuer</button>
+          <p style="margin:auto 0 0;font-size:14px;line-height:1.55;color:var(--ink2);text-align:center">Pas encore de compte ? Les comptes sont créés par le cheikh.</p>
+        </div>
+      </div>
+    </div>
+
+    <div data-screen-label="01b Saisir mot de passe" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">01b · Saisir mon mot de passe, erreur douce</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;padding:8px 24px 40px;gap:24px">
+          <span style="width:48px;height:48px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <div style="display:flex;flex-direction:column;gap:8px;padding-top:40px">
+            <span style="font-size:14px;font-weight:600;color:var(--acct)">Étape 2 sur 2</span>
+            <h1 style="margin:0;font-size:28px;font-weight:600">Saisir mon mot de passe</h1>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;min-height:56px;padding:0 6px 0 16px;border-radius:12px;background:var(--sf2)"><span dir="ltr" style="font-size:17px;font-weight:500">+221 77 123 45 67</span><span style="height:44px;padding:0 12px;display:flex;align-items:center;font-size:15px;font-weight:600;color:var(--acct)">Modifier</span></div>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:15px;font-weight:500">Mot de passe
+            <div style="display:flex;align-items:center;justify-content:space-between;height:56px;padding:0 6px 0 16px;border:2px solid var(--err);border-radius:12px;background:var(--sf);font-size:22px;letter-spacing:.2em">•••••••<span style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--ink2);letter-spacing:0"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"></path><circle cx="12" cy="12" r="3"></circle></svg></span></div>
+          </label>
+          <div style="display:flex;gap:12px;padding:14px 16px;border-radius:12px;background:var(--errs);color:var(--err);font-size:15px;line-height:1.5"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" style="flex:none;margin-top:2px"><circle cx="12" cy="12" r="9"></circle><path d="M12 7.5v5.5M12 16.5v.1"></path></svg><span>Ce mot de passe ne correspond pas. Prenez le temps de réessayer.</span></div>
+          <button style="height:56px;border:0;border-radius:14px;background:var(--pri);color:var(--onpri);font-size:17px;font-weight:600">Se connecter</button>
+          <p style="margin:auto 0 0;font-size:14px;line-height:1.55;color:var(--ink2);text-align:center">Mot de passe oublié ? Le cheikh peut le réinitialiser pour vous.</p>
+        </div>
+      </div>
+    </div>
+
+    <div data-screen-label="01c Choisir mot de passe" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">01c · Choisir mon mot de passe, première connexion</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;padding:8px 24px 40px;gap:22px">
+          <span style="width:48px;height:48px;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+          <div style="display:flex;flex-direction:column;gap:8px;padding-top:24px">
+            <span style="font-size:14px;font-weight:600;color:var(--acct)">Étape 2 sur 2</span>
+            <h1 style="margin:0;font-size:28px;font-weight:600">Choisir mon mot de passe</h1>
+            <p style="margin:0;font-size:16px;line-height:1.55;color:var(--ink2);text-wrap:pretty">Bienvenue Moussa. C'est votre première connexion : choisissez un mot de passe facile à retenir pour vous.</p>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:15px;font-weight:500">Nouveau mot de passe
+            <div style="display:flex;align-items:center;height:56px;padding:0 16px;border:1.5px solid var(--line);border-radius:12px;background:var(--sf);font-size:22px;letter-spacing:.2em">••••••••</div>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:8px;font-size:15px;font-weight:500">Confirmer le mot de passe
+            <div style="display:flex;align-items:center;height:56px;padding:0 16px;border:2px solid var(--pri);border-radius:12px;background:var(--sf);font-size:22px;letter-spacing:.2em">••••••••</div>
+          </label>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:15px">
+            <div style="display:flex;align-items:center;gap:10px;color:var(--ok)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Au moins 6 caractères</div>
+            <div style="display:flex;align-items:center;gap:10px;color:var(--ok)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Les deux saisies sont identiques</div>
+          </div>
+          <button style="margin-top:auto;height:56px;border:0;border-radius:14px;background:var(--pri);color:var(--onpri);font-size:17px;font-weight:600">Enregistrer et entrer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="02-04 Aujourd'hui, récitation, collectif" style="padding:64px;display:flex;flex-direction:column;gap:28px">
+  <h2 style="margin:0;font-size:24px;font-weight:600;color:#22251F">02 à 04 · Le quotidien du disciple</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:56px">
+
+    <div data-screen-label="02 Aujourd'hui FR" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">02 · Aujourd'hui</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:12px 20px 16px;gap:20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;color:var(--ink2)">Samedi 21 novembre</span><span style="font-size:26px;font-weight:600">Salam, Moussa</span></div>
+            <span style="height:36px;padding:0 12px;border-radius:99px;background:var(--oks);color:var(--ok);display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>À jour</span>
+          </div>
+          <div style="background:var(--hero);color:var(--onhero);border-radius:22px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;font-weight:600;color:var(--heroacc)">Zikr collectif en cours</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg></div>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span style="font-size:18px;font-weight:600">Yâ Latîf</span><span lang="ar" dir="rtl" style="font-family:Amiri,serif;font-size:30px;line-height:1.4">يَا لَطِيفُ</span></div>
+            <div style="height:8px;border-radius:99px;background:rgba(255,255,255,.18)"><div style="width:68%;height:100%;border-radius:99px;background:var(--heroacc)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:14px"><span>68 420 sur 100 000</span><span style="font-weight:600">68 %</span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="margin:0;font-size:20px;font-weight:600">Mes zikrs du jour</h2><span style="font-size:14px;color:var(--ink2)">1 sur 3 terminé</span></div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="background:var(--sf);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Astaghfirullah</span><span style="font-size:14px;color:var(--ink2)">100 sur 100</span></div><span style="height:28px;padding:0 10px;border-radius:99px;background:var(--oks);color:var(--ok);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:currentColor"></span>Fait</span></div>
+              <div style="height:6px;border-radius:99px;background:var(--sf2)"><div style="width:100%;height:100%;border-radius:99px;background:var(--pri)"></div></div>
+            </div>
+            <div style="background:var(--sf);border:2px solid var(--pri);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Salât sur le Prophète</span><span style="font-size:14px;color:var(--ink2)">64 sur 100</span></div><span style="height:28px;padding:0 10px;border-radius:99px;background:var(--warns);color:var(--warn);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:currentColor"></span>En cours</span></div>
+              <div style="height:6px;border-radius:99px;background:var(--sf2)"><div style="width:64%;height:100%;border-radius:99px;background:var(--pri)"></div></div>
+            </div>
+            <div style="background:var(--sf);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Lâ ilâha illâ Llâh</span><span style="font-size:14px;color:var(--ink2)">0 sur 100</span></div><span style="height:28px;padding:0 10px;border-radius:99px;background:var(--sf2);color:var(--ink2);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;border:1.5px solid currentColor;box-sizing:border-box"></span>Pas commencé</span></div>
+              <div style="height:6px;border-radius:99px;background:var(--sf2)"></div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:none;display:flex;justify-content:space-around;padding:6px 8px 26px;border-top:1px solid var(--line);background:var(--sf)">
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:600;color:var(--pri)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>Aujourd'hui</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.4 3.5 5.2"></path></svg>Collectif</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>Historique</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>Profil</div>
+        </div>
+      </div>
+    </div>
+
+    <div data-screen-label="03 Récitation FR" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">03 · Récitation (interactif : touchez le compteur)</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;padding:4px 20px 30px;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:48px;height:48px;flex:none;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+            <div style="display:flex;flex-direction:column"><span style="font-size:17px;font-weight:600">Salât sur le Prophète</span><span style="font-size:13px;color:var(--ink2)">Individuel · objectif 100</span></div>
+          </div>
+          <div lang="ar" dir="rtl" style="font-family:Amiri,serif;font-size:40px;line-height:1.8;text-align:center;padding:4px 0">اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ</div>
+          <div style="display:flex;flex-direction:column;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+            <div onClick="{{ toggleTr }}" style="min-height:48px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:600;cursor:pointer"><span>Translittération</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform:{{ trRot }}"><path d="M6 9l6 6 6-6"></path></svg></div>
+            <sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}"><p style="margin:0 0 12px;font-size:16px;line-height:1.5;font-style:italic;color:var(--ink2)">Allâhumma salli 'alâ sayyidinâ Muhammad</p></sc-if>
+            <div onClick="{{ toggleTd }}" style="min-height:48px;display:flex;align-items:center;justify-content:space-between;font-size:15px;font-weight:600;border-top:1px solid var(--line);cursor:pointer"><span>Traduction</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform:{{ tdRot }}"><path d="M6 9l6 6 6-6"></path></svg></div>
+            <sc-if value="{{ td }}" hint-placeholder-val="{{ false }}"><p style="margin:0 0 12px;font-size:16px;line-height:1.5;color:var(--ink2)">Ô Dieu, prie sur notre maître Muhammad.</p></sc-if>
+          </div>
+          <div style="flex:1;display:flex;align-items:center;justify-content:center">
+            <div onClick="{{ tap }}" style="position:relative;width:232px;height:232px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent">
+              <svg width="232" height="232" viewBox="0 0 232 232" style="position:absolute;inset:0"><circle cx="116" cy="116" r="108" fill="none" stroke="var(--sf2)" stroke-width="8"></circle><circle cx="116" cy="116" r="108" fill="none" stroke="var(--acc)" stroke-width="8" stroke-linecap="round" stroke-dasharray="{{ dash }}" transform="rotate(-90 116 116)"></circle></svg>
+              <div style="position:absolute;inset:18px;border-radius:50%;background:var(--pri);color:var(--onpri);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 10px 30px rgba(0,0,0,.15)" style-active="transform:scale(.97)"><span style="font-size:60px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums">{{ count }}</span><span style="font-size:15px;opacity:.85">{{ subFr }}</span></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button onClick="{{ undo }}" aria-label="Annuler le dernier ajout" style="width:56px;height:56px;flex:none;border:1.5px solid var(--line);border-radius:14px;background:var(--sf);color:var(--ink);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg></button>
+            <button onClick="{{ add10 }}" style="flex:1;height:56px;border:1.5px solid var(--line);border-radius:14px;background:var(--sf);color:var(--ink);font-size:18px;font-weight:600">+10</button>
+            <button onClick="{{ add100 }}" style="flex:1;height:56px;border:1.5px solid var(--line);border-radius:14px;background:var(--sf);color:var(--ink);font-size:18px;font-weight:600">+100</button>
+          </div>
+          <span style="font-size:13px;color:var(--ink2);text-align:center;min-height:18px">{{ lastFr }}</span>
+          <button onClick="{{ save }}" style="height:56px;border:0;border-radius:14px;background:var(--pri);color:var(--onpri);font-size:17px;font-weight:600">{{ saveFr }}</button>
+        </div>
+      </div>
+    </div>
+
+    <div data-screen-label="04 Collectif FR" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">04 · Zikr collectif</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:4px 20px 0;gap:16px;position:relative">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:48px;height:48px;flex:none;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg></span>
+            <span style="font-size:17px;font-weight:600">Zikr collectif</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <span lang="ar" dir="rtl" style="font-family:Amiri,serif;font-size:40px;line-height:1.5">يَا لَطِيفُ</span>
+            <span style="font-size:15px;color:var(--ink2)">Yâ Latîf · Ô Bienveillant</span>
+          </div>
+          <div style="display:flex;justify-content:center">
+            <div style="position:relative;width:184px;height:184px">
+              <svg width="184" height="184" viewBox="0 0 120 120" style="position:absolute;inset:0"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--sf2)" stroke-width="9"></circle><circle cx="60" cy="60" r="52" fill="none" stroke="var(--acc)" stroke-width="9" stroke-linecap="round" stroke-dasharray="222 327" transform="rotate(-90 60 60)"></circle></svg>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:40px;font-weight:600;line-height:1.1">68 %</span><span style="font-size:13px;color:var(--ink2)">68 420 / 100 000</span></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="background:var(--sf);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;color:var(--ink2)">Ma part</span><span style="font-size:20px;font-weight:600">3 200</span></div>
+            <div style="background:var(--sf);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:13px;color:var(--ink2)">Participants</span><span style="font-size:20px;font-weight:600">17 sur 20</span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="margin:0;font-size:18px;font-weight:600">Contributions</h2><span style="font-size:13px;color:var(--ink2)">Ordre alphabétique</span></div>
+          <div style="display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px;border-radius:14px;background:var(--pris)"><span style="width:36px;height:36px;border-radius:50%;background:var(--pri);color:var(--onpri);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">MD</span><span style="flex:1;font-size:15px;font-weight:600">Vous</span><span style="font-size:15px;font-weight:600">3 200</span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px;border-bottom:1px solid var(--line)"><span style="width:36px;height:36px;border-radius:50%;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">AK</span><span style="flex:1;font-size:15px">Abdoulaye Kane</span><span style="font-size:15px">2 900</span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px;border-bottom:1px solid var(--line)"><span style="width:36px;height:36px;border-radius:50%;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">AF</span><span style="flex:1;font-size:15px">Aminata Fall</span><span style="font-size:15px">6 500</span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px;border-bottom:1px solid var(--line)"><span style="width:36px;height:36px;border-radius:50%;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">AS</span><span style="flex:1;font-size:15px">Awa Seck</span><span style="font-size:15px">4 300</span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px"><span style="width:36px;height:36px;border-radius:50%;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600">CS</span><span style="flex:1;font-size:15px">Cheikh Sy</span><span style="font-size:15px">3 600</span></div>
+          </div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:28px 20px 14px;background:linear-gradient(to bottom,transparent,var(--bg) 40%)"><button style="width:100%;height:56px;border:0;border-radius:14px;background:var(--pri);color:var(--onpri);font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>Ajouter ma récitation</button></div>
+        </div>
+        <div style="flex:none;display:flex;justify-content:space-around;padding:6px 8px 26px;border-top:1px solid var(--line);background:var(--sf)">
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>Aujourd'hui</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:600;color:var(--pri)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.4 3.5 5.2"></path></svg>Collectif</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>Historique</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>Profil</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="05-06 Historique, profil" style="padding:64px;display:flex;flex-direction:column;gap:28px">
+  <h2 style="margin:0;font-size:24px;font-weight:600;color:#22251F">05 et 06 · Historique et profil</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:56px">
+
+    <div data-screen-label="05 Historique" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">05 · Historique</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:12px 20px 16px;gap:20px">
+          <h1 style="margin:0;font-size:28px;font-weight:600">Historique</h1>
+          <div style="background:var(--sf);border:1px solid var(--line);border-radius:20px;padding:16px;display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:12px;color:var(--ink2)">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><span>L</span><span style="width:30px;height:30px;border-radius:50%;background:var(--pri)"></span><span>16</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><span>M</span><span style="width:30px;height:30px;border-radius:50%;background:var(--pri)"></span><span>17</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><span>M</span><span style="width:30px;height:30px;border-radius:50%;background:var(--pris);border:2px solid var(--pri);box-sizing:border-box"></span><span>18</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><span>J</span><span style="width:30px;height:30px;border-radius:50%;background:var(--pri)"></span><span>19</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><span>V</span><span style="width:30px;height:30px;border-radius:50%;background:var(--pri)"></span><span>20</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--ink);font-weight:600"><span>S</span><span style="width:30px;height:30px;border-radius:50%;background:var(--pris);border:2px solid var(--pri);box-sizing:border-box;outline:2px solid var(--acc);outline-offset:2px"></span><span>21</span></div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:8px"><span>D</span><span style="width:30px;height:30px;border-radius:50%;border:1.5px dashed var(--line);box-sizing:border-box"></span><span>22</span></div>
+          </div>
+          <div style="display:flex;gap:16px;font-size:13px;color:var(--ink2);margin-top:-8px"><span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:50%;background:var(--pri)"></span>Tout est fait</span><span style="display:flex;align-items:center;gap:6px"><span style="width:12px;height:12px;border-radius:50%;background:var(--pris);border:2px solid var(--pri);box-sizing:border-box"></span>En partie</span></div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:600;color:var(--ink2)">Aujourd'hui, samedi 21 novembre</span>
+            <div style="background:var(--sf);border:1px solid var(--line);border-radius:16px;padding:0 16px">
+              <div style="min-height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);font-size:15px"><span>Astaghfirullah</span><span style="font-weight:600">100</span></div>
+              <div style="min-height:52px;display:flex;align-items:center;justify-content:space-between;font-size:15px"><span>Salât sur le Prophète</span><span style="font-weight:600">64</span></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:600;color:var(--ink2)">Vendredi 20 novembre</span>
+            <div style="background:var(--sf);border:1px solid var(--line);border-radius:16px;padding:0 16px">
+              <div style="min-height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);font-size:15px"><span>Astaghfirullah</span><span style="font-weight:600">100</span></div>
+              <div style="min-height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);font-size:15px"><span>Salât sur le Prophète</span><span style="font-weight:600">100</span></div>
+              <div style="min-height:52px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);font-size:15px"><span>Lâ ilâha illâ Llâh</span><span style="font-weight:600">100</span></div>
+              <div style="min-height:52px;display:flex;align-items:center;justify-content:space-between;font-size:15px;gap:8px"><span style="display:flex;align-items:center;gap:8px">Yâ Latîf<span style="height:24px;padding:0 8px;border-radius:99px;background:var(--pris);color:var(--pri);font-size:12px;font-weight:600;display:flex;align-items:center">Collectif</span></span><span style="font-weight:600">1 000</span></div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:none;display:flex;justify-content:space-around;padding:6px 8px 26px;border-top:1px solid var(--line);background:var(--sf)">
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>Aujourd'hui</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.4 3.5 5.2"></path></svg>Collectif</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:600;color:var(--pri)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>Historique</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>Profil</div>
+        </div>
+      </div>
+    </div>
+
+    <div data-screen-label="06 Profil" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">06 · Profil</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:12px 20px 16px;gap:14px">
+          <div style="display:flex;align-items:center;gap:14px">
+            <span style="width:56px;height:56px;border-radius:50%;background:var(--pri);color:var(--onpri);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600">MD</span>
+            <div style="display:flex;flex-direction:column"><span style="font-size:20px;font-weight:600">Moussa Diop</span><span dir="ltr" style="font-size:15px;color:var(--ink2);text-align:left">+221 77 123 45 67</span></div>
+          </div>
+          <div style="background:var(--sf);border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;align-items:center;gap:12px"><span style="width:36px;height:36px;border-radius:50%;background:var(--oks);color:var(--ok);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><div style="display:flex;flex-direction:column"><span style="font-size:15px;font-weight:600">Tout est synchronisé</span><span style="font-size:13px;color:var(--ink2)">Dernière synchro aujourd'hui à 9:12</span></div></div>
+            <button style="height:48px;border:1.5px solid var(--line);border-radius:14px;background:transparent;color:var(--ink);font-size:15px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-14 5.3M4 12a8 8 0 0 1 14-5.3"></path><path d="M18 3v4h-4M6 21v-4h4"></path></svg>Synchroniser maintenant</button>
+          </div>
+          <div style="background:var(--sf);border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:15px;font-weight:600">Langue</span>
+            <div style="display:flex;padding:4px;border-radius:14px;background:var(--sf2);gap:4px">
+              <span style="flex:1;height:44px;border-radius:10px;background:var(--sf);box-shadow:0 1px 2px rgba(0,0,0,.08);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">Français</span>
+              <span lang="ar" style="flex:1;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--ink2)">العربية</span>
+            </div>
+          </div>
+          <div style="background:var(--sf);border:1px solid var(--line);border-radius:18px;padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:15px;font-weight:600">Taille du texte arabe</span>
+            <div lang="ar" dir="rtl" style="font-family:Amiri,serif;font-size:34px;line-height:1.6;text-align:center">سُبْحَانَ اللَّهِ</div>
+            <div style="display:flex;align-items:center;gap:12px"><span lang="ar" style="width:32px;font-family:Amiri,serif;font-size:18px;text-align:center">أ</span><div style="flex:1;height:48px;display:flex;align-items:center;position:relative"><div style="flex:1;height:6px;border-radius:99px;background:var(--sf2)"><div style="width:55%;height:100%;border-radius:99px;background:var(--pri)"></div></div><span style="position:absolute;left:calc(55% - 14px);width:28px;height:28px;border-radius:50%;background:var(--sf);border:2px solid var(--pri);box-shadow:0 2px 6px rgba(0,0,0,.12)"></span></div><span lang="ar" style="width:32px;font-family:Amiri,serif;font-size:30px;text-align:center">أ</span></div>
+          </div>
+          <div style="background:var(--sf);border:1px solid var(--line);border-radius:18px;padding:0 16px;min-height:60px;display:flex;align-items:center;justify-content:space-between">
+            <span style="font-size:15px;font-weight:600">Mode sombre</span>
+            <span style="width:52px;height:32px;border-radius:99px;background:var(--sf2);border:1.5px solid var(--line);box-sizing:border-box;padding:3px;display:flex"><span style="width:24px;height:24px;border-radius:50%;background:var(--sf);box-shadow:0 1px 3px rgba(0,0,0,.2)"></span></span>
+          </div>
+          <button style="height:52px;border:1.5px solid var(--errs);border-radius:14px;background:transparent;color:var(--err);font-size:16px;font-weight:600">Se déconnecter</button>
+          <span style="font-size:13px;color:var(--ink2);text-align:center">Version 1.0.3</span>
+        </div>
+        <div style="flex:none;display:flex;justify-content:space-around;padding:6px 8px 26px;border-top:1px solid var(--line);background:var(--sf)">
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>Aujourd'hui</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.4 3.5 5.2"></path></svg>Collectif</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>Historique</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:600;color:var(--pri)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>Profil</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="07 États système" style="padding:64px;display:flex;flex-direction:column;gap:28px">
+  <h2 style="margin:0;font-size:24px;font-weight:600;color:#22251F">07 · États système</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:56px">
+
+    <div data-screen-label="07a Hors ligne" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">07a · Hors ligne, récitations en attente</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:none;margin:0 20px;display:flex;align-items:center;gap:10px;min-height:40px;padding:0 14px;border-radius:12px;background:var(--sf2);font-size:14px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 3l18 18M8.5 16.5a5 5 0 0 1 7 0M5 13a10 10 0 0 1 5.2-2.8M19 13a10 10 0 0 0-2.6-1.9M2 9.5a15 15 0 0 1 4.3-2.7M22 9.5a15 15 0 0 0-10-3.9"></path></svg>Hors ligne · tout est gardé sur l'appareil</div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:16px 20px;gap:18px">
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;color:var(--ink2)">Samedi 21 novembre</span><span style="font-size:26px;font-weight:600">Salam, Moussa</span></div>
+          <div style="background:var(--warns);color:var(--warn);border-radius:18px;padding:16px;display:flex;gap:12px">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M7 18a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.4 1.5A3.8 3.8 0 0 1 17.5 18"></path><path d="M12 12v7M9 15l3-3 3 3"></path></svg>
+            <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:16px;font-weight:600">12 récitations en attente d'envoi</span><span style="font-size:14px;line-height:1.5">Elles partiront automatiquement dès le retour de la connexion.</span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="margin:0;font-size:20px;font-weight:600">Mes zikrs du jour</h2><span style="font-size:14px;color:var(--ink2)">2 sur 3 terminés</span></div>
+          <div style="background:var(--sf);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Salât sur le Prophète</span><span style="font-size:14px;color:var(--ink2)">100 sur 100</span></div><span style="height:28px;padding:0 10px;border-radius:99px;border:1px dashed var(--ink2);color:var(--ink2);font-size:13px;font-weight:600;display:flex;align-items:center">En attente d'envoi</span></div>
+            <div style="height:6px;border-radius:99px;background:var(--sf2)"><div style="width:100%;height:100%;border-radius:99px;background:var(--pri)"></div></div>
+          </div>
+          <div style="background:var(--sf);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Lâ ilâha illâ Llâh</span><span style="font-size:14px;color:var(--ink2)">0 sur 100</span></div><span style="height:28px;padding:0 10px;border-radius:99px;background:var(--sf2);color:var(--ink2);font-size:13px;font-weight:600;display:flex;align-items:center">Pas commencé</span></div>
+            <div style="height:6px;border-radius:99px;background:var(--sf2)"></div>
+          </div>
+          <p style="margin:0;font-size:14px;line-height:1.55;color:var(--ink2)">Le total du zikr collectif sera mis à jour à la prochaine connexion.</p>
+        </div>
+        <div style="flex:none;display:flex;justify-content:space-around;padding:6px 8px 26px;border-top:1px solid var(--line);background:var(--sf)">
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:600;color:var(--pri)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>Aujourd'hui</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.4 3.5 5.2"></path></svg>Collectif</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>Historique</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>Profil</div>
+        </div>
+      </div>
+    </div>
+
+    <div data-screen-label="07b Synchro et mise à jour" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">07b · Synchronisation réussie, nouvelle version</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:84px 20px 16px;gap:20px;position:relative">
+          <div style="background:var(--hero);color:var(--onhero);border-radius:22px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:13px;font-weight:600;color:var(--heroacc)">Zikr collectif en cours</span>
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span style="font-size:18px;font-weight:600">Yâ Latîf</span><span lang="ar" dir="rtl" style="font-family:Amiri,serif;font-size:30px;line-height:1.4">يَا لَطِيفُ</span></div>
+            <div style="height:8px;border-radius:99px;background:rgba(255,255,255,.18)"><div style="width:71%;height:100%;border-radius:99px;background:var(--heroacc)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:14px"><span>71 420 sur 100 000</span><span style="font-weight:600">71 %</span></div>
+          </div>
+          <div style="background:var(--sf);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Salât sur le Prophète</span><span style="font-size:14px;color:var(--ink2)">100 sur 100</span></div><span style="height:28px;padding:0 10px;border-radius:99px;background:var(--oks);color:var(--ok);font-size:13px;font-weight:600;display:flex;align-items:center">Fait</span></div>
+            <div style="height:6px;border-radius:99px;background:var(--sf2)"><div style="width:100%;height:100%;border-radius:99px;background:var(--pri)"></div></div>
+          </div>
+          <div style="position:absolute;top:4px;left:16px;right:16px;display:flex;align-items:center;gap:12px;min-height:56px;padding:0 16px;border-radius:16px;background:var(--sf);border:1px solid var(--line);box-shadow:0 12px 30px rgba(0,0,0,.14)"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:var(--oks);color:var(--ok);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span><div style="display:flex;flex-direction:column"><span style="font-size:15px;font-weight:600">Synchronisation réussie</span><span style="font-size:13px;color:var(--ink2)">12 récitations envoyées</span></div></div>
+          <div style="position:absolute;left:16px;right:16px;bottom:12px;display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:18px;background:var(--hero);color:var(--onhero)">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:16px;font-weight:600">Nouvelle version disponible</span><span style="font-size:14px;line-height:1.5;opacity:.9">Vos récitations sont déjà enregistrées. La mise à jour recharge l'application.</span></div>
+            <div style="display:flex;gap:8px"><button style="flex:1;height:48px;border:1.5px solid rgba(255,255,255,.35);border-radius:12px;background:transparent;color:var(--onhero);font-size:15px;font-weight:600">Plus tard</button><button style="flex:1;height:48px;border:0;border-radius:12px;background:var(--onhero);color:var(--hero);font-size:15px;font-weight:600">Mettre à jour</button></div>
+          </div>
+        </div>
+        <div style="flex:none;display:flex;justify-content:space-around;padding:6px 8px 26px;border-top:1px solid var(--line);background:var(--sf)">
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;font-weight:600;color:var(--pri)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>Aujourd'hui</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.4 3.5 5.2"></path></svg>Collectif</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>Historique</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:12px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>Profil</div>
+        </div>
+      </div>
+    </div>
+
+    <div data-screen-label="07c Installation Android" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">07c · Invite d'installation, Android</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="padding:12px 20px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;color:var(--ink2)">Samedi 21 novembre</span><span style="font-size:26px;font-weight:600">Salam, Moussa</span></div>
+          <div style="height:170px;border-radius:22px;background:var(--hero)"></div>
+          <div style="height:96px;border-radius:20px;background:var(--sf);border:1px solid var(--line)"></div>
+          <div style="height:96px;border-radius:20px;background:var(--sf);border:1px solid var(--line)"></div>
+        </div>
+        <div style="position:absolute;inset:0;background:var(--scrim)"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:var(--sf);border-radius:28px 28px 0 0;padding:12px 24px 36px;display:flex;flex-direction:column;gap:20px">
+          <span style="align-self:center;width:40px;height:5px;border-radius:99px;background:var(--line)"></span>
+          <div style="display:flex;align-items:center;gap:16px">
+            <span style="width:64px;height:64px;flex:none;border-radius:16px;background:var(--hero);display:flex;align-items:center;justify-content:center"><svg width="40" height="40" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="15" stroke="var(--onhero)" stroke-width="2"></circle><circle cx="22" cy="7" r="4.5" fill="var(--heroacc)"></circle></svg></span>
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:20px;font-weight:600">Installer Zikr</span><span style="font-size:14px;color:var(--ink2)">Sur l'écran d'accueil de ce téléphone</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;font-size:15px;line-height:1.5">
+            <div style="display:flex;gap:10px;align-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>S'ouvre d'un geste, comme une application</div>
+            <div style="display:flex;gap:10px;align-items:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>Fonctionne même sans connexion</div>
+          </div>
+          <div style="display:flex;gap:10px"><button style="flex:1;height:56px;border:1.5px solid var(--line);border-radius:14px;background:transparent;color:var(--ink);font-size:16px;font-weight:600">Plus tard</button><button style="flex:1;height:56px;border:0;border-radius:14px;background:var(--pri);color:var(--onpri);font-size:16px;font-weight:600">Installer</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div data-screen-label="07d Installation iOS" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">07d · Tutoriel d'installation, iOS Safari</div>
+      <div style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;padding:12px 20px;display:flex;flex-direction:column;gap:20px">
+          <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;color:var(--ink2)">Samedi 21 novembre</span><span style="font-size:26px;font-weight:600">Salam, Moussa</span></div>
+          <div style="height:170px;border-radius:22px;background:var(--hero)"></div>
+        </div>
+        <div style="position:absolute;inset:0;background:var(--scrim)"></div>
+        <div style="position:absolute;left:12px;right:12px;bottom:118px;background:var(--sf);border-radius:24px;padding:22px;display:flex;flex-direction:column;gap:18px;box-shadow:0 20px 50px rgba(0,0,0,.25)">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px"><span style="font-size:20px;font-weight:600;line-height:1.3">Ajouter Zikr à l'écran d'accueil</span><span style="width:44px;height:44px;flex:none;margin:-8px -8px 0 0;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink2)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></span></div>
+          <div style="display:flex;gap:14px;align-items:flex-start"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:var(--pris);color:var(--pri);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">1</span><div style="display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.5"><span>Touchez <b>Partager</b> dans la barre de Safari, en bas de l'écran.</span><span style="width:48px;height:48px;border-radius:12px;background:var(--sf2);display:flex;align-items:center;justify-content:center;color:#2D7FF9"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"></path><path d="M7 11H5v10h14V11h-2"></path></svg></span></div></div>
+          <div style="display:flex;gap:14px;align-items:flex-start"><span style="width:32px;height:32px;flex:none;border-radius:50%;background:var(--pris);color:var(--pri);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700">2</span><div style="display:flex;flex-direction:column;gap:8px;font-size:15px;line-height:1.5"><span>Choisissez <b>Sur l'écran d'accueil</b>, puis touchez Ajouter.</span><span style="height:48px;padding:0 14px;border-radius:12px;background:var(--sf2);display:flex;align-items:center;justify-content:space-between;gap:24px;font-size:15px">Sur l'écran d'accueil<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="3"></rect><path d="M12 8v8M8 12h8"></path></svg></span></div></div>
+        </div>
+        <svg width="20" height="28" viewBox="0 0 20 28" style="position:absolute;left:185px;bottom:88px"><path d="M10 0v24M3 17l7 8 7-8" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <div dir="ltr" style="position:absolute;left:0;right:0;bottom:0;height:84px;background:#F2F2F4;border-top:1px solid #D6D6DA;display:flex;justify-content:space-around;align-items:flex-start;padding-top:14px;color:#2D7FF9">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"></path></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B9BCC4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"></path></svg>
+          <span style="width:44px;height:44px;margin-top:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px #2D7FF9;display:flex;align-items:center;justify-content:center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"></path><path d="M7 11H5v10h14V11h-2"></path></svg></span>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 4h14v17l-7-4-7 4z"></path></svg>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="4" width="12" height="12" rx="2"></rect><path d="M8 20h12V8"></path></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section data-screen-label="02-04 AR" style="padding:64px;display:flex;flex-direction:column;gap:28px">
+  <h2 style="margin:0;font-size:24px;font-weight:600;color:#22251F">02 à 04 en arabe · mise en page miroir (RTL)</h2>
+  <div style="display:flex;flex-wrap:wrap;gap:56px">
+
+    <div data-screen-label="02 Aujourd'hui AR" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">02 AR · اليوم</div>
+      <div dir="rtl" lang="ar" style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:12px 20px 16px;gap:20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:15px;color:var(--ink2)">السبت 21 نوفمبر</span><span style="font-size:26px;font-weight:600">السلام عليكم، موسى</span></div>
+            <span style="height:36px;padding:0 12px;border-radius:99px;background:var(--oks);color:var(--ok);display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>محدَّث</span>
+          </div>
+          <div style="background:var(--hero);color:var(--onhero);border-radius:22px;padding:18px 20px;display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:600;color:var(--heroacc)">ذكر جماعي جارٍ</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform:scaleX(-1)"><path d="M9 5l7 7-7 7"></path></svg></div>
+            <div style="font-family:Amiri,serif;font-size:32px;line-height:1.4">يَا لَطِيفُ</div>
+            <div style="height:8px;border-radius:99px;background:rgba(255,255,255,.18)"><div style="width:68%;height:100%;border-radius:99px;background:var(--heroacc)"></div></div>
+            <div style="display:flex;justify-content:space-between;font-size:15px"><span><bdi dir="ltr">68 420</bdi> من <bdi dir="ltr">100 000</bdi></span><span style="font-weight:600">68٪</span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="margin:0;font-size:21px;font-weight:600">أذكاري اليوم</h2><span style="font-size:15px;color:var(--ink2)">1 من 3 مكتمل</span></div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="background:var(--sf);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">أستغفر الله</span><span style="font-size:15px;color:var(--ink2)">100 من 100</span></div><span style="height:28px;padding:0 10px;border-radius:99px;background:var(--oks);color:var(--ok);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:currentColor"></span>مكتمل</span></div>
+              <div style="height:6px;border-radius:99px;background:var(--sf2)"><div style="width:100%;height:100%;border-radius:99px;background:var(--pri)"></div></div>
+            </div>
+            <div style="background:var(--sf);border:2px solid var(--pri);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">الصلاة على النبي</span><span style="font-size:15px;color:var(--ink2)">64 من 100</span></div><span style="height:28px;padding:0 10px;border-radius:99px;background:var(--warns);color:var(--warn);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:currentColor"></span>جارٍ</span></div>
+              <div style="height:6px;border-radius:99px;background:var(--sf2)"><div style="width:64%;height:100%;border-radius:99px;background:var(--pri)"></div></div>
+            </div>
+            <div style="background:var(--sf);border:1px solid var(--line);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:12px"><div style="display:flex;flex-direction:column;gap:2px"><span style="font-size:17px;font-weight:600">لا إله إلا الله</span><span style="font-size:15px;color:var(--ink2)">0 من 100</span></div><span style="height:28px;padding:0 10px;border-radius:99px;background:var(--sf2);color:var(--ink2);font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;border:1.5px solid currentColor;box-sizing:border-box"></span>لم يبدأ</span></div>
+              <div style="height:6px;border-radius:99px;background:var(--sf2)"></div>
+            </div>
+          </div>
+        </div>
+        <div style="flex:none;display:flex;justify-content:space-around;padding:6px 8px 26px;border-top:1px solid var(--line);background:var(--sf)">
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;font-weight:600;color:var(--pri)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>اليوم</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.4 3.5 5.2"></path></svg>جماعي</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>السجل</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>حسابي</div>
+        </div>
+      </div>
+    </div>
+
+    <div data-screen-label="03 Récitation AR" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">03 AR · التلاوة (interactif)</div>
+      <div dir="rtl" lang="ar" style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;display:flex;flex-direction:column;padding:4px 20px 30px;gap:12px">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:48px;height:48px;flex:none;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform:scaleX(-1)"><path d="M15 5l-7 7 7 7"></path></svg></span>
+            <div style="display:flex;flex-direction:column"><span style="font-size:18px;font-weight:600">الصلاة على النبي</span><span style="font-size:14px;color:var(--ink2)">فردي · الهدف 100</span></div>
+          </div>
+          <div style="font-family:Amiri,serif;font-size:40px;line-height:1.8;text-align:center;padding:4px 0">اللَّهُمَّ صَلِّ عَلَى سَيِّدِنَا مُحَمَّدٍ</div>
+          <div style="display:flex;flex-direction:column;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+            <div onClick="{{ toggleTr }}" style="min-height:48px;display:flex;align-items:center;justify-content:space-between;font-size:16px;font-weight:600;cursor:pointer"><span>النطق بالحروف اللاتينية</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform:{{ trRot }}"><path d="M6 9l6 6 6-6"></path></svg></div>
+            <sc-if value="{{ tr }}" hint-placeholder-val="{{ true }}"><p dir="ltr" style="margin:0 0 12px;font-size:16px;line-height:1.5;font-style:italic;color:var(--ink2);text-align:right">Allâhumma salli 'alâ sayyidinâ Muhammad</p></sc-if>
+            <div onClick="{{ toggleTd }}" style="min-height:48px;display:flex;align-items:center;justify-content:space-between;font-size:16px;font-weight:600;border-top:1px solid var(--line);cursor:pointer"><span>الترجمة الفرنسية</span><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform:{{ tdRot }}"><path d="M6 9l6 6 6-6"></path></svg></div>
+            <sc-if value="{{ td }}" hint-placeholder-val="{{ false }}"><p dir="ltr" lang="fr" style="margin:0 0 12px;font-size:16px;line-height:1.5;color:var(--ink2);text-align:right">Ô Dieu, prie sur notre maître Muhammad.</p></sc-if>
+          </div>
+          <div style="flex:1;display:flex;align-items:center;justify-content:center">
+            <div onClick="{{ tap }}" style="position:relative;width:232px;height:232px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent">
+              <svg width="232" height="232" viewBox="0 0 232 232" style="position:absolute;inset:0;transform:scaleX(-1)"><circle cx="116" cy="116" r="108" fill="none" stroke="var(--sf2)" stroke-width="8"></circle><circle cx="116" cy="116" r="108" fill="none" stroke="var(--acc)" stroke-width="8" stroke-linecap="round" stroke-dasharray="{{ dash }}" transform="rotate(-90 116 116)"></circle></svg>
+              <div style="position:absolute;inset:18px;border-radius:50%;background:var(--pri);color:var(--onpri);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 10px 30px rgba(0,0,0,.15)"><span style="font-size:60px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums">{{ count }}</span><span style="font-size:16px;opacity:.85">{{ subAr }}</span></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <button onClick="{{ undo }}" aria-label="تراجع عن آخر إضافة" style="width:56px;height:56px;flex:none;border:1.5px solid var(--line);border-radius:14px;background:var(--sf);color:var(--ink);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform:scaleX(-1)"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10a6 6 0 0 1 0 12h-3"></path></svg></button>
+            <button onClick="{{ add10 }}" style="flex:1;height:56px;border:1.5px solid var(--line);border-radius:14px;background:var(--sf);color:var(--ink);font-size:18px;font-weight:600"><bdi dir="ltr">+10</bdi></button>
+            <button onClick="{{ add100 }}" style="flex:1;height:56px;border:1.5px solid var(--line);border-radius:14px;background:var(--sf);color:var(--ink);font-size:18px;font-weight:600"><bdi dir="ltr">+100</bdi></button>
+          </div>
+          <span style="font-size:14px;color:var(--ink2);text-align:center;min-height:18px">{{ lastAr }}</span>
+          <button onClick="{{ save }}" style="height:56px;border:0;border-radius:14px;background:var(--pri);color:var(--onpri);font-size:18px;font-weight:600">{{ saveAr }}</button>
+        </div>
+      </div>
+    </div>
+
+    <div data-screen-label="04 Collectif AR" style="display:flex;flex-direction:column;gap:14px">
+      <div style="font-size:14px;font-weight:600;color:#45473F">04 AR · الذكر الجماعي</div>
+      <div dir="rtl" lang="ar" style="width:390px;height:844px;flex:none;border-radius:48px;overflow:hidden;background:var(--bg);color:var(--ink);box-shadow:0 0 0 10px #16181A,0 30px 60px rgba(0,0,0,.18);position:relative;display:flex;flex-direction:column">
+        <div dir="ltr" style="height:52px;flex:none;display:flex;align-items:flex-end;justify-content:space-between;padding:0 32px 10px;font-size:15px;font-weight:600"><span>9:41</span><span style="width:25px;height:12px;border:1.5px solid currentColor;border-radius:4px;box-sizing:border-box;padding:1.5px"><span style="display:block;width:70%;height:100%;background:currentColor;border-radius:1px"></span></span></div>
+        <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:4px 20px 0;gap:16px;position:relative">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="width:48px;height:48px;flex:none;border-radius:50%;border:1.5px solid var(--line);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="transform:scaleX(-1)"><path d="M15 5l-7 7 7 7"></path></svg></span>
+            <span style="font-size:18px;font-weight:600">ذكر جماعي</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+            <span style="font-family:Amiri,serif;font-size:40px;line-height:1.5">يَا لَطِيفُ</span>
+            <span style="font-size:15px;color:var(--ink2)">الهدف <bdi dir="ltr">100 000</bdi></span>
+          </div>
+          <div style="display:flex;justify-content:center">
+            <div style="position:relative;width:184px;height:184px">
+              <svg width="184" height="184" viewBox="0 0 120 120" style="position:absolute;inset:0;transform:scaleX(-1)"><circle cx="60" cy="60" r="52" fill="none" stroke="var(--sf2)" stroke-width="9"></circle><circle cx="60" cy="60" r="52" fill="none" stroke="var(--acc)" stroke-width="9" stroke-linecap="round" stroke-dasharray="222 327" transform="rotate(-90 60 60)"></circle></svg>
+              <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center"><span style="font-size:40px;font-weight:600;line-height:1.2">68٪</span><span dir="ltr" style="font-size:13px;color:var(--ink2)">68 420 / 100 000</span></div>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="background:var(--sf);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;color:var(--ink2)">نصيبي</span><span style="font-size:20px;font-weight:600"><bdi dir="ltr">3 200</bdi></span></div>
+            <div style="background:var(--sf);border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;flex-direction:column;gap:2px"><span style="font-size:14px;color:var(--ink2)">المشاركون</span><span style="font-size:20px;font-weight:600">17 من 20</span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:baseline"><h2 style="margin:0;font-size:19px;font-weight:600">المساهمات</h2><span style="font-size:14px;color:var(--ink2)">ترتيب أبجدي</span></div>
+          <div style="display:flex;flex-direction:column">
+            <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px;border-radius:14px;background:var(--pris)"><span style="width:36px;height:36px;border-radius:50%;background:var(--pri);color:var(--onpri);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">م</span><span style="flex:1;font-size:16px;font-weight:600">أنت</span><span style="font-size:16px;font-weight:600"><bdi dir="ltr">3 200</bdi></span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px;border-bottom:1px solid var(--line)"><span style="width:36px;height:36px;border-radius:50%;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">أ</span><span style="flex:1;font-size:16px">أميناتا فال</span><span style="font-size:16px"><bdi dir="ltr">6 500</bdi></span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px;border-bottom:1px solid var(--line)"><span style="width:36px;height:36px;border-radius:50%;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">ش</span><span style="flex:1;font-size:16px">شيخ سي</span><span style="font-size:16px"><bdi dir="ltr">3 600</bdi></span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px;border-bottom:1px solid var(--line)"><span style="width:36px;height:36px;border-radius:50%;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">ع</span><span style="flex:1;font-size:16px">عبد الله كان</span><span style="font-size:16px"><bdi dir="ltr">2 900</bdi></span></div>
+            <div style="display:flex;align-items:center;gap:12px;min-height:52px;padding:0 12px"><span style="width:36px;height:36px;border-radius:50%;background:var(--sf2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600">ع</span><span style="flex:1;font-size:16px">عوا سيك</span><span style="font-size:16px"><bdi dir="ltr">4 300</bdi></span></div>
+          </div>
+          <div style="position:absolute;left:0;right:0;bottom:0;padding:28px 20px 14px;background:linear-gradient(to bottom,transparent,var(--bg) 40%)"><button style="width:100%;height:56px;border:0;border-radius:14px;background:var(--pri);color:var(--onpri);font-size:18px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>أضف تلاوتي</button></div>
+        </div>
+        <div style="flex:none;display:flex;justify-content:space-around;padding:6px 8px 26px;border-top:1px solid var(--line);background:var(--sf)">
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>اليوم</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;font-weight:600;color:var(--pri)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.8c1.8.7 3 2.4 3.5 5.2"></path></svg>جماعي</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>السجل</div>
+          <div style="width:80px;height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:13px;color:var(--ink2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8.5" r="4"></circle><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"></path></svg>حسابي</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section></x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;palette&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;A · vert, crème, or&quot;,&quot;B · bleu nuit, ivoire, turquoise&quot;],&quot;default&quot;:&quot;A · vert, crème, or&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Thème&quot;},&quot;mode&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Clair&quot;,&quot;Sombre&quot;],&quot;default&quot;:&quot;Clair&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Thème&quot;}}">
+class Component extends DCLogic {
+  static T = {
+    AL: "--bg:#F4EEE1;--sf:#FBF8F1;--sf2:#ECE4D3;--ink:#1B2A22;--ink2:#56635A;--line:#DCD2BD;--pri:#1F4D3A;--onpri:#F8F3E7;--pris:#E1E9DD;--acc:#A8874A;--acct:#7A5D27;--hero:#1F4D3A;--onhero:#F8F3E7;--heroacc:#D9BC80;--ok:#2E6F48;--oks:#DFEDE3;--warn:#8A5D0E;--warns:#F3E6CC;--err:#9E3B2C;--errs:#F5DFD9;--scrim:rgba(20,30,25,.45)",
+    AD: "--bg:#0E1813;--sf:#15221C;--sf2:#1C2D25;--ink:#EDE6D4;--ink2:#A7B2A7;--line:#2A3C33;--pri:#9CCBB0;--onpri:#0E1813;--pris:#1D3329;--acc:#C8A765;--acct:#D8BA7C;--hero:#1B382B;--onhero:#EDE6D4;--heroacc:#D8BA7C;--ok:#86C9A0;--oks:#183226;--warn:#E3B75E;--warns:#342813;--err:#EE9A89;--errs:#3B1F1A;--scrim:rgba(0,0,0,.6)",
+    BL: "--bg:#F6F3EA;--sf:#FFFDF7;--sf2:#ECE8DC;--ink:#141B2D;--ink2:#4E576D;--line:#DAD5C7;--pri:#1B2645;--onpri:#F6F3EA;--pris:#E3E6EE;--acc:#2A9D95;--acct:#17706A;--hero:#1B2645;--onhero:#F6F3EA;--heroacc:#6FD6CC;--ok:#2E6F48;--oks:#DFEDE3;--warn:#8A5D0E;--warns:#F3E6CC;--err:#9E3B2C;--errs:#F5DFD9;--scrim:rgba(15,20,35,.45)",
+    BD: "--bg:#0A0F1E;--sf:#111830;--sf2:#18213C;--ink:#ECE9DF;--ink2:#A3AAC0;--line:#253052;--pri:#6FD3C9;--onpri:#0A0F1E;--pris:#16253C;--acc:#5CC6BC;--acct:#7ADBD1;--hero:#18244A;--onhero:#ECE9DF;--heroacc:#7ADBD1;--ok:#86C9A0;--oks:#183226;--warn:#E3B75E;--warns:#342813;--err:#EE9A89;--errs:#3B1F1A;--scrim:rgba(0,0,0,.6)"
+  };
+  state = { count: 64, stack: [], saved: false, tr: true, td: false };
+  applyTheme() {
+    const p = String(this.props.palette ?? 'A').startsWith('B') ? 'B' : 'A';
+    const m = this.props.mode === 'Sombre' ? 'D' : 'L';
+    Component.T[p + m].split(';').forEach(kv => { const i = kv.indexOf(':'); if (i > 0) document.documentElement.style.setProperty(kv.slice(0, i).trim(), kv.slice(i + 1).trim()); });
+  }
+  componentDidMount() { this.applyTheme(); }
+  componentDidUpdate() { this.applyTheme(); }
+  add(n) {
+    if (navigator.vibrate) navigator.vibrate(8);
+    this.setState(s => ({ count: s.count + n, stack: [...s.stack, n], saved: false }));
+  }
+  renderVals() {
+    const { count, stack, saved, tr, td } = this.state;
+    const goal = 100, C = 678.6;
+    const last = stack[stack.length - 1];
+    return {
+      count, tr, td,
+      dash: `${Math.min(count / goal, 1) * C} ${C}`,
+      subFr: count >= goal ? 'Objectif atteint' : `sur ${goal}`,
+      subAr: count >= goal ? 'اكتمل الهدف' : `من ${goal}`,
+      lastFr: last ? `Dernier ajout : +${last}` : '',
+      lastAr: last ? `آخر إضافة: ${last}+` : '',
+      saveFr: saved ? 'Enregistré sur l\u2019appareil' : 'Enregistrer',
+      saveAr: saved ? 'حُفظ على الجهاز' : 'حفظ',
+      trRot: tr ? 'rotate(180deg)' : 'none',
+      tdRot: td ? 'rotate(180deg)' : 'none',
+      tap: () => this.add(1),
+      add10: () => this.add(10),
+      add100: () => this.add(100),
+      undo: () => this.setState(s => s.stack.length ? ({ count: s.count - s.stack[s.stack.length - 1], stack: s.stack.slice(0, -1), saved: false }) : null),
+      save: () => this.setState({ saved: true, stack: [] }),
+      toggleTr: () => this.setState(s => ({ tr: !s.tr })),
+      toggleTd: () => this.setState(s => ({ td: !s.td }))
+    };
+  }
+}
+</script>
+</body>
+</html>
