@@ -24,7 +24,7 @@ export default function CheikhAdminLayout({ children }: { children: React.ReactN
         <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <span className="px-2.5 py-1 rounded-lg bg-[var(--accent-gold-soft)] text-[var(--accent-gold)] text-xs font-bold uppercase">
-              {isAr ? 'فضاء الشيخ' : 'Espace Cheikh'}
+              {isAr ? 'فضاء المسؤول' : 'Espace Gestionnaire'}
             </span>
             <h1 className="font-display text-lg font-bold text-[var(--accent-primary)]">
               {isAr ? 'زيارة فاس ٢٠٢٦' : 'Ziyara Fès 2026'}

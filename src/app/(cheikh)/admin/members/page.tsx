@@ -7,6 +7,7 @@ import type { CountryCode } from 'libphonenumber-js';
 
 interface MemberRow {
   id: string;
+  ziyara_id: string;
   phone_e164: string;
   full_name: string | null;
   role: 'cheikh' | 'member';
@@ -33,7 +34,7 @@ export default function CheikhMembersPage() {
     const supabase = createClient();
     const { data } = await supabase
       .from('group_members')
-      .select('id, phone_e164, full_name, role, must_change_password, last_synced_at, created_at')
+      .select('id, ziyara_id, phone_e164, full_name, role, must_change_password, last_synced_at, created_at')
       .order('created_at', { ascending: true });
     if (data) setMembers(data as MemberRow[]);
     setLoading(false);
@@ -42,6 +43,28 @@ export default function CheikhMembersPage() {
   useEffect(() => {
     void loadMembers();
   }, [loadMembers]);
+
+  async function toggleManager(m: MemberRow) {
+    const next = m.role === 'cheikh' ? 'member' : 'cheikh';
+    const supabase = createClient();
+    const { error } = await supabase.rpc('set_member_role', {
+      p_ziyara_id: m.ziyara_id,
+      p_member_id: m.id,
+      p_role: next,
+    });
+    if (error) {
+      setFeedback({ type: 'err', msg: error.message });
+      return;
+    }
+    setFeedback({
+      type: 'ok',
+      msg:
+        next === 'cheikh'
+          ? isAr ? 'تم تعيين مسؤول جديد.' : 'Nouveau gestionnaire nommé.'
+          : isAr ? 'تم سحب صفة المسؤول.' : 'Rôle de gestionnaire retiré.',
+    });
+    await loadMembers();
+  }
 
   async function handleCreateMember(e: React.FormEvent) {
     e.preventDefault();
@@ -191,7 +214,7 @@ export default function CheikhMembersPage() {
                     <span>{m.full_name || (isAr ? 'بدون اسم بعد' : 'Nom non renseigné')}</span>
                     {m.role === 'cheikh' && (
                       <span className="px-2 py-0.5 rounded-full text-[11px] bg-[var(--accent-gold-soft)] text-[var(--accent-gold)] font-bold">
-                        Cheikh
+                        Gestionnaire
                       </span>
                     )}
                   </div>
@@ -216,6 +239,16 @@ export default function CheikhMembersPage() {
                       ? 'مُفعّل'
                       : 'Activé'}
                   </span>
+
+                  <button
+                    type="button"
+                    onClick={() => void toggleManager(m)}
+                    className="h-9 px-3 rounded-lg border border-[var(--border-strong)] text-[var(--text-primary)] font-semibold"
+                  >
+                    {m.role === 'cheikh'
+                      ? isAr ? 'سحب صفة المسؤول' : 'Retirer gestionnaire'
+                      : isAr ? 'تعيين مسؤولاً' : 'Nommer gestionnaire'}
+                  </button>
 
                   <span className="text-[var(--text-secondary)] tabular-nums">
                     {m.last_synced_at

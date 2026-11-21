@@ -247,7 +247,7 @@ export default function CheikhRealtimeDashboard() {
       const { error } = await supabase.rpc('cheikh_correct_entry', {
         p_entry_id: editingEntry.id,
         p_new_quantity: parsedQty,
-        p_reason: reason.trim() || 'Correction par le Cheikh',
+        p_reason: reason.trim() || 'Correction par le gestionnaire',
       });
       if (!error) {
         setEditingEntry(null);
@@ -354,7 +354,7 @@ export default function CheikhRealtimeDashboard() {
           <div className="text-xl font-bold mt-1">{filteredMetrics.targetSum.toLocaleString()}</div>
         </div>
         <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4">
-          <div className="text-xs text-[var(--text-secondary)]">{isAr ? 'المُنجز' : 'Fait (Perso + Pot)'}</div>
+          <div className="text-xs text-[var(--text-secondary)]">{isAr ? 'المُنجز' : 'Fait (Perso + Réserve)'}</div>
           <div className="text-xl font-bold text-[var(--accent-primary)] mt-1">
             {(filteredMetrics.donePersonal + filteredMetrics.donePot).toLocaleString()}
           </div>
@@ -366,7 +366,7 @@ export default function CheikhRealtimeDashboard() {
           </div>
         </div>
         <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4">
-          <div className="text-xs text-[var(--text-secondary)]">{isAr ? 'الوعاء المشترك' : 'Pot commun (reste)'}</div>
+          <div className="text-xs text-[var(--text-secondary)]">{isAr ? 'الاحتياطي' : 'Réserve (reste)'}</div>
           <div className="text-xl font-bold text-[var(--status-pot)] mt-1">
             {filteredMetrics.potRemaining.toLocaleString()} / {filteredMetrics.potAllocated.toLocaleString()}
           </div>
@@ -528,7 +528,7 @@ export default function CheikhRealtimeDashboard() {
 
       <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4 space-y-3">
         <h2 className="font-display text-lg font-bold">
-          {isAr ? 'سجل الإدخالات الأخيرة (تصحيح / إلغاء)' : 'Dernières saisies (Audit & Correction Cheikh)'}
+          {isAr ? 'سجل الإدخالات الأخيرة (تصحيح / إلغاء)' : 'Dernières saisies (Audit & Correction)'}
         </h2>
         <div className="divide-y divide-[var(--border-subtle)]">
           {entries.slice(0, 20).map((entry) => {
@@ -545,7 +545,7 @@ export default function CheikhRealtimeDashboard() {
                   <span className="mx-1.5 font-bold tabular-nums">+{entry.quantity.toLocaleString()}</span>
                   {entry.source === 'pot' && (
                     <span className="px-2 py-0.5 rounded-full text-[11px] bg-[var(--status-pot-soft)] text-[var(--status-pot)] font-bold">
-                      Pot
+                      Réserve
                     </span>
                   )}
                   <div className="text-xs text-[var(--text-secondary)] tabular-nums">

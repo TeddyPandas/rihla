@@ -102,7 +102,7 @@ export default function LoginPage() {
           </h1>
           <p className="text-sm text-[var(--text-secondary)] mt-1">
             {isAr
-              ? 'تسجيل الدخول برقم الهاتف المقدم من الشيخ'
+              ? 'تسجيل الدخول برقم الهاتف المقدم من المسؤول'
               : 'Connexion avec votre numéro de téléphone'}
           </p>
         </div>

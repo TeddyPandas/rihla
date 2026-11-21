@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAppShell } from '@/components/providers/app-shell-provider';
 import type { TimeSlot } from '@/lib/offline/db';
+import { listDays, previewDistribution, type DistributionMode } from '@/lib/distribution';
 
 interface ZikrDefRow {
   id: string;
@@ -37,11 +38,12 @@ export default function CheikhZikrConfigPage() {
   const [defaultSlot, setDefaultSlot] = useState<TimeSlot>('morning');
 
   const [selectedZikrId, setSelectedZikrId] = useState('');
-  const [targetAudience, setTargetAudience] = useState<'all' | string>('all');
-  const [dateMode, setDateMode] = useState<'all_days' | 'single_day'>('all_days');
+  const [mode, setMode] = useState<DistributionMode>('daily');
   const [singleDate, setSingleDate] = useState('2026-12-19');
   const [slot, setSlot] = useState<TimeSlot>('morning');
-  const [targetQty, setTargetQty] = useState('1000');
+  const [total, setTotal] = useState('124000');
+  const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
+  const [distributing, setDistributing] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
 
   const loadData = useCallback(async () => {
@@ -70,7 +72,10 @@ export default function CheikhZikrConfigPage() {
           setSelectedZikrId(defsRes.data[0].id);
         }
       }
-      if (memRes.data) setMembers(memRes.data);
+      if (memRes.data) {
+        setMembers(memRes.data);
+        setSelectedMembers((prev) => (prev.size === 0 ? new Set(memRes.data.map((m) => m.id)) : prev));
+      }
     }
   }, [selectedZikrId]);
 
@@ -102,70 +107,52 @@ export default function CheikhZikrConfigPage() {
     }
   }
 
-  async function handleAssignGoals(e: React.FormEvent) {
+  const days = ziyara ? listDays(ziyara.start_date, ziyara.end_date) : [];
+  const totalNum = parseInt(total, 10);
+  const preview = previewDistribution({
+    total: Number.isNaN(totalNum) ? 0 : totalNum,
+    mode,
+    days,
+    day: singleDate,
+    participants: selectedMembers.size,
+  });
+
+  function toggleMember(id: string) {
+    setSelectedMembers((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  async function handleDistribute(e: React.FormEvent) {
     e.preventDefault();
-    if (!ziyara || !selectedZikrId) return;
-    const qty = parseInt(targetQty, 10);
-    if (Number.isNaN(qty) || qty < 0) return;
-
-    const zikrDef = zikrs.find((z) => z.id === selectedZikrId);
-    if (!zikrDef) return;
-
-    const targetMembers =
-      targetAudience === 'all' ? members.map((m) => m.id) : [targetAudience];
-
-    const targetDates: (string | null)[] = [];
-    if (zikrDef.scope === 'stay') {
-      targetDates.push(null);
-    } else if (dateMode === 'single_day') {
-      targetDates.push(singleDate);
-    } else {
-      const cur = new Date(`${ziyara.start_date}T00:00:00Z`);
-      const end = new Date(`${ziyara.end_date}T00:00:00Z`);
-      while (cur <= end) {
-        targetDates.push(cur.toISOString().slice(0, 10));
-        cur.setUTCDate(cur.getUTCDate() + 1);
-      }
-    }
-
+    if (!ziyara || !selectedZikrId || preview.rows.length === 0) return;
+    setDistributing(true);
+    setMsg(null);
     const supabase = createClient();
-
-    for (const memberId of targetMembers) {
-      for (const d of targetDates) {
-        let query = supabase
-          .from('member_goals')
-          .select('id')
-          .eq('ziyara_id', ziyara.id)
-          .eq('member_id', memberId)
-          .eq('zikr_id', selectedZikrId);
-
-        query = d === null ? query.is('target_date', null) : query.eq('target_date', d);
-        const { data: existing } = await query.maybeSingle();
-
-        if (existing) {
-          await supabase
-            .from('member_goals')
-            .update({ initial_target: qty, slot, updated_at: new Date().toISOString() })
-            .eq('id', existing.id);
-        } else {
-          await supabase.from('member_goals').insert({
-            ziyara_id: ziyara.id,
-            member_id: memberId,
-            zikr_id: selectedZikrId,
-            target_date: d,
-            slot,
-            initial_target: qty,
-            adjusted_delta: 0,
-          });
-        }
-      }
+    const { data, error } = await supabase.rpc('distribute_zikr', {
+      p_ziyara_id: ziyara.id,
+      p_zikr_id: selectedZikrId,
+      p_total: totalNum,
+      p_mode: mode,
+      p_day: mode === 'day' ? singleDate : null,
+      p_member_ids: Array.from(selectedMembers),
+      p_slot: slot,
+    });
+    setDistributing(false);
+    if (error) {
+      setMsg(error.message);
+      return;
     }
-
+    const res = data as { participants: number; surplus_to_manager: number } | null;
     setMsg(
       isAr
-        ? 'تم تحديث الأهداف بنجاح.'
-        : `Objectifs enregistrés pour ${targetMembers.length} membre(s).`
+        ? `تم التوزيع على ${res?.participants ?? selectedMembers.size} مشاركين. الباقي للمسؤول: ${res?.surplus_to_manager ?? 0}.`
+        : `Réparti entre ${res?.participants ?? selectedMembers.size} participant(s). Surplus gardé par vous : ${(res?.surplus_to_manager ?? 0).toLocaleString('fr-FR')}.`
     );
+    await loadData();
   }
 
   return (
@@ -268,10 +255,10 @@ export default function CheikhZikrConfigPage() {
 
       <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5">
         <h2 className="font-display text-xl font-bold text-[var(--accent-primary)] mb-4">
-          {isAr ? '٢. توزيع الأهداف على الأعضاء' : '2. Attribuer ou modifier des objectifs'}
+          {isAr ? '٢. توزيع إجمالي على المشاركين' : '2. Répartir un total'}
         </h2>
 
-        <form onSubmit={handleAssignGoals} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form onSubmit={handleDistribute} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
             <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
               {isAr ? 'الذكر' : 'Zikr concerné'}
@@ -281,13 +268,16 @@ export default function CheikhZikrConfigPage() {
               onChange={(e) => {
                 setSelectedZikrId(e.target.value);
                 const found = zikrs.find((z) => z.id === e.target.value);
-                if (found) setSlot(found.default_slot);
+                if (found) {
+                  setSlot(found.default_slot);
+                  setMode(found.scope === 'stay' ? 'stay' : 'daily');
+                }
               }}
               className="w-full h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-sm"
             >
               {zikrs.map((z) => (
                 <option key={z.id} value={z.id}>
-                  {isAr ? z.name_ar : z.name_fr} ({z.scope === 'daily' ? 'Jour' : 'Séjour'})
+                  {isAr ? z.name_ar : z.name_fr}
                 </option>
               ))}
             </select>
@@ -295,97 +285,136 @@ export default function CheikhZikrConfigPage() {
 
           <div>
             <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-              {isAr ? 'المستفيدون' : 'Destinataire(s)'}
-            </label>
-            <select
-              value={targetAudience}
-              onChange={(e) => setTargetAudience(e.target.value)}
-              className="w-full h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-sm"
-            >
-              <option value="all">
-                {isAr ? `جميع أعضاء المجموعة (${members.length})` : `Tout le groupe (${members.length})`}
-              </option>
-              {members.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.full_name || m.phone_e164}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-              {isAr ? 'العدد المستهدف' : 'Quantité cible'}
+              {isAr ? 'العدد الإجمالي' : 'Total à répartir'}
             </label>
             <input
               type="number"
-              min={0}
+              min={1}
               required
-              value={targetQty}
-              onChange={(e) => setTargetQty(e.target.value)}
+              inputMode="numeric"
+              value={total}
+              onChange={(e) => setTotal(e.target.value)}
               className="w-full h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-base font-bold tabular-nums"
             />
           </div>
 
           <div>
             <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-              {isAr ? 'الوقت' : 'Créneau affiché'}
+              {isAr ? 'طريقة التوزيع' : 'Mode de répartition'}
             </label>
             <select
-              value={slot}
-              onChange={(e) => setSlot(e.target.value as TimeSlot)}
+              value={mode}
+              onChange={(e) => setMode(e.target.value as DistributionMode)}
               className="w-full h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-sm"
             >
-              {Object.entries(t.slots).map(([key, label]) => (
-                <option key={key} value={key}>
-                  {label}
-                </option>
-              ))}
+              <option value="daily">
+                {isAr ? `يومي: مقسّم على ${days.length || 9} أيام` : `Journalier : réparti sur les ${days.length || 9} jours`}
+              </option>
+              <option value="stay">
+                {isAr ? 'إجمالي الزيارة (بدون تقسيم يومي)' : 'Séjour global (sans découpage par jour)'}
+              </option>
+              <option value="day">{isAr ? 'يوم واحد' : 'Un seul jour'}</option>
             </select>
           </div>
 
-          {zikrs.find((z) => z.id === selectedZikrId)?.scope === 'daily' && (
-            <>
-              <div>
-                <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-                  {isAr ? 'الأيام المعنية' : 'Application sur les jours'}
-                </label>
-                <select
-                  value={dateMode}
-                  onChange={(e) => setDateMode(e.target.value as 'all_days' | 'single_day')}
-                  className="w-full h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-sm"
-                >
-                  <option value="all_days">
-                    {isAr ? 'كل أيام الزيارة (9 أيام)' : 'Tous les jours du séjour (9 jours)'}
+          {mode === 'day' ? (
+            <div>
+              <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
+                {isAr ? 'التاريخ' : 'Jour'}
+              </label>
+              <input
+                type="date"
+                min={ziyara?.start_date}
+                max={ziyara?.end_date}
+                value={singleDate}
+                onChange={(e) => setSingleDate(e.target.value)}
+                className="w-full h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-sm tabular-nums"
+              />
+            </div>
+          ) : (
+            <div>
+              <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
+                {isAr ? 'الوقت' : 'Créneau affiché'}
+              </label>
+              <select
+                value={slot}
+                onChange={(e) => setSlot(e.target.value as TimeSlot)}
+                className="w-full h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-sm"
+              >
+                {Object.entries(t.slots).map(([key, label]) => (
+                  <option key={key} value={key}>
+                    {label}
                   </option>
-                  <option value="single_day">{isAr ? 'يوم محدد' : 'Un jour précis'}</option>
-                </select>
-              </div>
+                ))}
+              </select>
+            </div>
+          )}
 
-              {dateMode === 'single_day' && (
-                <div>
-                  <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
-                    {isAr ? 'التاريخ' : 'Date'}
-                  </label>
+          <div className="sm:col-span-2">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-semibold text-[var(--text-secondary)]">
+                {isAr ? `المشاركون (${selectedMembers.size}/${members.length})` : `Participants (${selectedMembers.size}/${members.length})`}
+              </span>
+              <span className="flex gap-3 text-xs font-semibold">
+                <button type="button" className="text-[var(--accent-primary)]" onClick={() => setSelectedMembers(new Set(members.map((m) => m.id)))}>
+                  {isAr ? 'الكل' : 'Tous'}
+                </button>
+                <button type="button" className="text-[var(--text-secondary)]" onClick={() => setSelectedMembers(new Set())}>
+                  {isAr ? 'لا أحد' : 'Aucun'}
+                </button>
+              </span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-64 overflow-y-auto">
+              {members.map((m) => (
+                <label
+                  key={m.id}
+                  className="flex items-center gap-3 min-h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-sm"
+                >
                   <input
-                    type="date"
-                    min={ziyara?.start_date}
-                    max={ziyara?.end_date}
-                    value={singleDate}
-                    onChange={(e) => setSingleDate(e.target.value)}
-                    className="w-full h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-sm tabular-nums"
+                    type="checkbox"
+                    checked={selectedMembers.has(m.id)}
+                    onChange={() => toggleMember(m.id)}
+                    className="w-5 h-5 accent-[var(--accent-primary)]"
                   />
+                  <span>{m.full_name || m.phone_e164}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {preview.rows.length > 0 && (
+            <div className="sm:col-span-2 rounded-xl bg-[var(--bg-surface)] border border-[var(--border-subtle)] p-4 text-sm space-y-2">
+              <div className="font-semibold">{isAr ? 'معاينة قبل التأكيد' : 'Aperçu avant validation'}</div>
+              <div className="tabular-nums">
+                {isAr ? 'حصة كل مشارك:' : 'Part de chaque participant :'}{' '}
+                <strong>{preview.sharePerParticipant.toLocaleString('fr-FR')}</strong>
+                {mode === 'daily' && preview.rows[0] && (
+                  <span className="text-[var(--text-secondary)]">
+                    {' '}
+                    ({isAr ? 'حوالي' : 'env.'} {preview.rows[0].share.toLocaleString('fr-FR')} {isAr ? 'يوميا' : 'par jour'})
+                  </span>
+                )}
+              </div>
+              <div className="tabular-nums">
+                {isAr ? 'الباقي (يعود إليك):' : 'Surplus (pour vous) :'}{' '}
+                <strong>{preview.surplusTotal.toLocaleString('fr-FR')}</strong>
+              </div>
+              {mode === 'daily' && (
+                <div className="text-xs text-[var(--text-secondary)] tabular-nums">
+                  {isAr ? 'الكمية اليومية:' : 'Quantité par jour :'}{' '}
+                  {preview.rows.map((r) => r.quantity.toLocaleString('fr-FR')).join(' · ')}
                 </div>
               )}
-            </>
+            </div>
           )}
 
           <div className="sm:col-span-2">
             <button
               type="submit"
-              className="h-12 px-6 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-semibold text-sm"
+              disabled={distributing || preview.rows.length === 0}
+              className="h-12 px-6 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-semibold text-sm disabled:opacity-50"
             >
-              {isAr ? 'تطبيق الأهداف' : 'Enregistrer les objectifs'}
+              {distributing ? '…' : isAr ? 'تأكيد التوزيع' : 'Valider la répartition'}
             </button>
           </div>
         </form>

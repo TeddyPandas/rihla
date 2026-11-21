@@ -82,20 +82,20 @@ export default function MemberCommonPotPage() {
     <div className="space-y-5 pb-6">
       <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4">
         <h2 className="font-display text-xl font-bold text-[var(--status-pot)]">
-          {isAr ? 'الوعاء المشترك التطوعي' : 'Pot commun volontaire'}
+          {isAr ? 'الاحتياطي' : 'Réserve'}
         </h2>
         <p className="text-xs text-[var(--text-secondary)] mt-1">
           {isAr
-            ? 'المساهمة في الوعاء المشترك تطوعية وتُخصم من رصيد الوعاء دون التأثير على هدفك الشخصي.'
-            : 'Prenez volontairement une part du pot ouvert par le Cheikh. Ces saisies réduisent le pot sans modifier votre objectif personnel.'}
+            ? 'يمكنك أن تأخذ من الاحتياطي: ما تنجزه هنا يُخصم من رصيده دون المساس بهدفك الشخصي.'
+            : 'Servez-vous dans la Réserve : ce que vous faites ici est déduit de la Réserve sans changer votre objectif personnel.'}
         </p>
       </section>
 
       {potCards.length === 0 ? (
         <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-6 text-center text-sm text-[var(--text-secondary)]">
           {isAr
-            ? 'لا يوجد أي وعاء مشترك مفتوح حالياً.'
-            : 'Aucun pot commun ouvert pour le moment.'}
+            ? 'الاحتياطي فارغ حالياً.'
+            : 'La Réserve est vide pour le moment.'}
         </div>
       ) : (
         <div className="space-y-3">
@@ -110,7 +110,7 @@ export default function MemberCommonPotPage() {
                     {isAr ? zikr.nameAr : zikr.nameFr}
                   </h3>
                   <p className="text-xs text-[var(--text-secondary)]">
-                    {isAr ? 'مساهمتك في الوعاء:' : 'Votre contribution au pot :'}{' '}
+                    {isAr ? 'ما أخذته من الاحتياطي:' : 'Ce que vous avez pris dans la Réserve :'}{' '}
                     <strong className="text-[var(--accent-primary)]">
                       {myPotContribution.toLocaleString()}
                     </strong>
@@ -133,11 +133,11 @@ export default function MemberCommonPotPage() {
               >
                 {remaining === 0
                   ? isAr
-                    ? 'اكتمل الوعاء'
-                    : 'Pot entièrement accompli'
+                    ? 'نفد الاحتياطي'
+                    : 'Réserve épuisée'
                   : isAr
-                  ? '+ المساهمة في هذا الوعاء'
-                  : '+ Contribuer au pot commun'}
+                  ? '+ الأخذ من الاحتياطي'
+                  : '+ Puiser dans la Réserve'}
               </button>
             </article>
           ))}
@@ -147,7 +147,7 @@ export default function MemberCommonPotPage() {
       {myPotHistory.length > 0 && (
         <section className="space-y-2">
           <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] px-1">
-            {isAr ? 'سجل مساهماتك في الوعاء' : 'Vos saisies « Pot commun »'}
+            {isAr ? 'سجل ما أخذته من الاحتياطي' : 'Vos saisies « Réserve »'}
           </h3>
           <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] divide-y divide-[var(--border-subtle)]">
             {myPotHistory.map((entry) => {
@@ -190,7 +190,7 @@ export default function MemberCommonPotPage() {
           <div className="w-full max-w-md rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-display text-lg font-bold text-[var(--status-pot)]">
-                {isAr ? selectedZikr.nameAr : selectedZikr.nameFr} (Pot)
+                {isAr ? selectedZikr.nameAr : selectedZikr.nameFr} (Réserve)
               </h3>
               <button
                 type="button"

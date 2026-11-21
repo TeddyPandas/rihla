@@ -51,6 +51,7 @@ export default function CheikhRedistributePage() {
   const [selectedRecipientIds, setSelectedRecipientIds] = useState<string[]>([]);
   const [equalPerMemberInput, setEqualPerMemberInput] = useState<string>('0');
   const [customAllocations, setCustomAllocations] = useState<Record<string, string>>({});
+  const [allocDate, setAllocDate] = useState<string>('');
 
   const [submitting, setSubmitting] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null);
@@ -102,13 +103,18 @@ export default function CheikhRedistributePage() {
     return goals
       .map((g) => {
         const effectiveTarget = Math.max(0, g.initial_target + g.adjusted_delta);
+        const datedDays = new Set(
+          goals
+            .filter((x) => x.member_id === g.member_id && x.zikr_id === g.zikr_id && x.target_date !== null)
+            .map((x) => x.target_date)
+        );
         const done = entries
           .filter(
             (e) =>
               e.member_id === g.member_id &&
               e.zikr_id === g.zikr_id &&
               e.source === 'personal' &&
-              (g.target_date === null || e.entry_date === g.target_date)
+              (g.target_date === null ? !datedDays.has(e.entry_date) : e.entry_date === g.target_date)
           )
           .reduce((acc, e) => acc + e.quantity, 0);
         const remaining = Math.max(0, effectiveTarget - done);
@@ -138,16 +144,17 @@ export default function CheikhRedistributePage() {
     if (targetedMode === 'equal') {
       const perMember = Math.max(0, parseInt(equalPerMemberInput, 10) || 0);
       return selectedRecipientIds
-        .map((memberId) => ({ member_id: memberId, quantity: perMember }))
+        .map((memberId) => ({ member_id: memberId, quantity: perMember, ...(allocDate ? { target_date: allocDate } : {}) }))
         .filter((a) => a.quantity > 0);
     }
     return selectedRecipientIds
       .map((memberId) => ({
         member_id: memberId,
         quantity: Math.max(0, parseInt(customAllocations[memberId] || '0', 10) || 0),
+        ...(allocDate ? { target_date: allocDate } : {}),
       }))
       .filter((a) => a.quantity > 0);
-  }, [selectedRecipientIds, targetedMode, equalPerMemberInput, customAllocations]);
+  }, [selectedRecipientIds, targetedMode, equalPerMemberInput, customAllocations, allocDate]);
 
   const totalTargeted = targetedAllocationsList.reduce((acc, a) => acc + a.quantity, 0);
   const totalDistributed = potQty + totalTargeted;
@@ -194,6 +201,7 @@ export default function CheikhRedistributePage() {
       setEqualPerMemberInput('0');
       setSelectedRecipientIds([]);
       setCustomAllocations({});
+      setAllocDate('');
       await loadData();
     } finally {
       setSubmitting(false);
@@ -209,8 +217,8 @@ export default function CheikhRedistributePage() {
           </h2>
           <p className="text-xs text-[var(--text-secondary)] mt-1">
             {isAr
-              ? 'يمكنك الجمع بين الإسناد المباشر لأعضاء محددين والوعاء المشترك التطوعي في عملية واحدة.'
-              : 'Combinez en une seule validation une réattribution ciblée et une mise en pot commun volontaire.'}
+              ? 'يمكنك الجمع بين الإسناد المباشر لأعضاء محددين وإيداع جزء في الاحتياطي في عملية واحدة.'
+              : 'Combinez en une seule validation une réattribution ciblée et une mise en Réserve.'}
           </p>
         </div>
 
@@ -243,10 +251,27 @@ export default function CheikhRedistributePage() {
               </select>
             </div>
 
+            <div>
+              <label className="block text-xs font-semibold text-[var(--text-secondary)] mb-1">
+                {isAr ? 'يوم تطبيق الإسناد (اختياري)' : 'Jour d’application des attributions (optionnel)'}
+              </label>
+              <input
+                type="date"
+                value={allocDate}
+                onChange={(e) => setAllocDate(e.target.value)}
+                className="w-full h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-sm tabular-nums"
+              />
+              <p className="mt-1 text-xs text-[var(--text-secondary)]">
+                {isAr
+                  ? 'اتركه فارغاً لإبقاء نفس يوم الهدف الأصلي.'
+                  : 'Laissez vide pour garder le même jour que l’objectif d’origine.'}
+              </p>
+            </div>
+
             <div className="p-4 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-sm font-bold text-[var(--status-pot)]">
-                  {isAr ? '٢. حصة الوعاء المشترك (تطوعي للجميع)' : '2. Part vers le Pot commun (volontaire)'}
+                  {isAr ? '٢. جزء يُودَع في الاحتياطي' : '2. Part vers la Réserve'}
                 </label>
                 {activeLateItem && (
                   <button
