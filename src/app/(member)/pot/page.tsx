@@ -146,7 +146,7 @@ export default function MemberCommonPotPage() {
 
       {myPotHistory.length > 0 && (
         <section className="space-y-2">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] px-1">
+          <h3 className="text-sm font-semibold text-[var(--text-secondary)] px-1">
             {isAr ? 'سجل ما أخذته من الاحتياطي' : 'Vos saisies « Réserve »'}
           </h3>
           <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] divide-y divide-[var(--border-subtle)]">
@@ -186,7 +186,7 @@ export default function MemberCommonPotPage() {
       )}
 
       {selectedZikr && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-end sm:items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[var(--scrim)] flex items-end sm:items-center justify-center p-4">
           <div className="w-full max-w-md rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h3 className="font-display text-lg font-bold text-[var(--status-pot)]">

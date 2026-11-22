@@ -1,77 +1,170 @@
 @import "tailwindcss";
 
+/* Palettes du design « Zikr — disciple » : A = vert & or, B = bleu nuit & turquoise.
+   Mode : data-theme (light | dark). Palette : data-palette (A | B). */
+
 :root,
 [data-theme="light"] {
-  --bg-canvas: #FAF7F0;
-  --bg-surface: #F2ECE0;
-  --bg-elevated: #FFFDF8;
-  --border-subtle: #E2D9C8;
-  --border-strong: #C9BBA2;
+  --bg-canvas: #F4EEE1;
+  --bg-surface: #ECE4D3;
+  --bg-elevated: #FBF8F1;
+  --border-subtle: #DCD2BD;
+  --border-strong: #C4B89D;
 
-  --text-primary: #1A1D1B;
-  --text-secondary: #5A625E;
-  --text-on-accent: #FAF7F0;
+  --text-primary: #1B2A22;
+  --text-secondary: #56635A;
+  --text-on-accent: #F8F3E7;
 
-  --accent-primary: #0E4D3E;
-  --accent-primary-hover: #0A3A2F;
-  --accent-primary-soft: rgba(14, 77, 62, 0.10);
+  --accent-primary: #1F4D3A;
+  --accent-primary-hover: #163A2B;
+  --accent-primary-soft: #E1E9DD;
 
-  --accent-gold: #B8862D;
-  --accent-gold-soft: rgba(184, 134, 45, 0.14);
+  --accent-gold: #A8874A;
+  --accent-gold-text: #7A5D27;
+  --accent-gold-soft: color-mix(in srgb, #A8874A 16%, transparent);
 
-  --status-late: #A63A2B;
-  --status-late-soft: rgba(166, 58, 43, 0.12);
-  --status-offline: #8C6239;
-  --status-offline-soft: rgba(140, 98, 57, 0.14);
-  --status-pot: #1D6366;
-  --status-pot-soft: rgba(29, 99, 102, 0.12);
+  --hero-bg: #1F4D3A;
+  --hero-text: #F8F3E7;
+  --hero-accent: #D9BC80;
+
+  --status-ok: #2E6F48;
+  --status-ok-soft: #DFEDE3;
+  --status-late: #9E3B2C;
+  --status-late-soft: #F5DFD9;
+  --status-offline: #8A5D0E;
+  --status-offline-soft: #F3E6CC;
+  --status-pot: #7A5D27;
+  --status-pot-soft: color-mix(in srgb, #A8874A 16%, transparent);
+  --scrim: rgba(20,30,25,.45);
 }
 
 [data-theme="dark"] {
-  --bg-canvas: #0F1715;
-  --bg-surface: #172320;
-  --bg-elevated: #1E2D29;
-  --border-subtle: #253632;
-  --border-strong: #354D47;
+  --bg-canvas: #0E1813;
+  --bg-surface: #1C2D25;
+  --bg-elevated: #15221C;
+  --border-subtle: #2A3C33;
+  --border-strong: #3A5045;
 
-  --text-primary: #F3EFE6;
-  --text-secondary: #9AA8A3;
-  --text-on-accent: #0F1715;
+  --text-primary: #EDE6D4;
+  --text-secondary: #A7B2A7;
+  --text-on-accent: #0E1813;
 
-  --accent-primary: #D4A853;
-  --accent-primary-hover: #E2B967;
-  --accent-primary-soft: rgba(212, 168, 83, 0.14);
+  --accent-primary: #9CCBB0;
+  --accent-primary-hover: #B3DCC4;
+  --accent-primary-soft: #1D3329;
 
-  --accent-gold: #2E8B6E;
-  --accent-gold-soft: rgba(46, 139, 110, 0.18);
+  --accent-gold: #C8A765;
+  --accent-gold-text: #D8BA7C;
+  --accent-gold-soft: color-mix(in srgb, #C8A765 16%, transparent);
 
-  --status-late: #D96B52;
-  --status-late-soft: rgba(217, 107, 82, 0.16);
-  --status-offline: #D99B52;
-  --status-offline-soft: rgba(217, 155, 82, 0.16);
-  --status-pot: #4DA6A9;
-  --status-pot-soft: rgba(77, 166, 169, 0.16);
+  --hero-bg: #1B382B;
+  --hero-text: #EDE6D4;
+  --hero-accent: #D8BA7C;
+
+  --status-ok: #86C9A0;
+  --status-ok-soft: #183226;
+  --status-late: #EE9A89;
+  --status-late-soft: #3B1F1A;
+  --status-offline: #E3B75E;
+  --status-offline-soft: #342813;
+  --status-pot: #D8BA7C;
+  --status-pot-soft: color-mix(in srgb, #C8A765 16%, transparent);
+  --scrim: rgba(0,0,0,.6);
+}
+
+[data-palette="B"],
+[data-palette="B"][data-theme="light"] {
+  --bg-canvas: #F6F3EA;
+  --bg-surface: #ECE8DC;
+  --bg-elevated: #FFFDF7;
+  --border-subtle: #DAD5C7;
+  --border-strong: #C3BDAC;
+
+  --text-primary: #141B2D;
+  --text-secondary: #4E576D;
+  --text-on-accent: #F6F3EA;
+
+  --accent-primary: #1B2645;
+  --accent-primary-hover: #111A33;
+  --accent-primary-soft: #E3E6EE;
+
+  --accent-gold: #2A9D95;
+  --accent-gold-text: #17706A;
+  --accent-gold-soft: color-mix(in srgb, #2A9D95 16%, transparent);
+
+  --hero-bg: #1B2645;
+  --hero-text: #F6F3EA;
+  --hero-accent: #6FD6CC;
+
+  --status-ok: #2E6F48;
+  --status-ok-soft: #DFEDE3;
+  --status-late: #9E3B2C;
+  --status-late-soft: #F5DFD9;
+  --status-offline: #8A5D0E;
+  --status-offline-soft: #F3E6CC;
+  --status-pot: #17706A;
+  --status-pot-soft: color-mix(in srgb, #2A9D95 16%, transparent);
+  --scrim: rgba(15,20,35,.45);
+}
+
+[data-palette="B"][data-theme="dark"] {
+  --bg-canvas: #0A0F1E;
+  --bg-surface: #18213C;
+  --bg-elevated: #111830;
+  --border-subtle: #253052;
+  --border-strong: #35426B;
+
+  --text-primary: #ECE9DF;
+  --text-secondary: #A3AAC0;
+  --text-on-accent: #0A0F1E;
+
+  --accent-primary: #6FD3C9;
+  --accent-primary-hover: #8FE0D7;
+  --accent-primary-soft: #16253C;
+
+  --accent-gold: #5CC6BC;
+  --accent-gold-text: #7ADBD1;
+  --accent-gold-soft: color-mix(in srgb, #5CC6BC 16%, transparent);
+
+  --hero-bg: #18244A;
+  --hero-text: #ECE9DF;
+  --hero-accent: #7ADBD1;
+
+  --status-ok: #86C9A0;
+  --status-ok-soft: #183226;
+  --status-late: #EE9A89;
+  --status-late-soft: #3B1F1A;
+  --status-offline: #E3B75E;
+  --status-offline-soft: #342813;
+  --status-pot: #7ADBD1;
+  --status-pot-soft: color-mix(in srgb, #5CC6BC 16%, transparent);
+  --scrim: rgba(0,0,0,.6);
 }
 
 @layer base {
   body {
     background-color: var(--bg-canvas);
     color: var(--text-primary);
-    font-family: var(--font-sans-fr), var(--font-sans-ar), system-ui, sans-serif;
+    font-family: var(--font-sans-ar), system-ui, sans-serif;
     transition: background-color 0.2s ease, color 0.2s ease;
     -webkit-tap-highlight-color: transparent;
   }
 
   [dir="rtl"] body {
-    font-family: var(--font-sans-ar), var(--font-sans-fr), system-ui, sans-serif;
+    font-family: var(--font-sans-ar), system-ui, sans-serif;
   }
 }
 
+/* Le design utilise IBM Plex Sans (Arabic) pour tout le texte ; Amiri reste réservé au texte arabe des zikr. */
 .font-display {
-  font-family: var(--font-display-fr), var(--font-display-ar), Georgia, serif;
+  font-family: var(--font-sans-ar), system-ui, sans-serif;
+  font-weight: 600;
 }
 
-[dir="rtl"] .font-display,
+[dir="rtl"] .font-display {
+  font-family: var(--font-sans-ar), system-ui, sans-serif;
+}
+
 .font-arabic-script {
   font-family: var(--font-display-ar), serif;
 }
@@ -84,3 +177,13 @@
   background-image: radial-gradient(circle at 1px 1px, var(--border-strong) 1px, transparent 0);
   background-size: 20px 20px;
 }
+
+/* Compteur et animations du design */
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+a:focus-visible, button:focus-visible, [role="button"]:focus-visible { outline: 3px solid var(--accent-gold); outline-offset: 2px; }
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+@keyframes sheet-up { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.sheet-up { animation: sheet-up .22s ease-out; }
+[dir="rtl"] .flip { transform: scaleX(-1); }

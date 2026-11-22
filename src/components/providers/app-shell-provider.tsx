@@ -1,13 +1,17 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { dictionary, Lang, ThemeMode } from '@/lib/i18n/dictionary';
+import { dictionary, Lang, ThemeMode, Palette } from '@/lib/i18n/dictionary';
 
 interface AppShellContextValue {
   lang: Lang;
   setLang: (lang: Lang) => void;
   theme: ThemeMode;
   toggleTheme: () => void;
+  palette: Palette;
+  setPalette: (p: Palette) => void;
+  arSize: number;
+  setArSize: (n: number) => void;
   isOnline: boolean;
   t: (typeof dictionary)[Lang];
 }
@@ -17,6 +21,8 @@ const AppShellContext = createContext<AppShellContextValue | null>(null);
 export function AppShellProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLangState] = useState<Lang>('fr');
   const [theme, setTheme] = useState<ThemeMode>('light');
+  const [palette, setPaletteState] = useState<Palette>('A');
+  const [arSize, setArSizeState] = useState<number>(55);
   const [isOnline, setIsOnline] = useState<boolean>(true);
 
   useEffect(() => {
@@ -24,6 +30,10 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
     const savedTheme = localStorage.getItem('ziyara_theme') as ThemeMode | null;
     if (savedLang === 'fr' || savedLang === 'ar') setLangState(savedLang);
     if (savedTheme === 'light' || savedTheme === 'dark') setTheme(savedTheme);
+    const savedPalette = localStorage.getItem('ziyara_palette');
+    if (savedPalette === 'A' || savedPalette === 'B') setPaletteState(savedPalette);
+    const savedSize = Number(localStorage.getItem('ziyara_ar_size'));
+    if (savedSize >= 0 && savedSize <= 100 && localStorage.getItem('ziyara_ar_size') !== null) setArSizeState(savedSize);
 
     setIsOnline(navigator.onLine);
     const goOnline = () => setIsOnline(true);
@@ -47,6 +57,17 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('ziyara_theme', theme);
   }, [theme]);
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-palette', palette);
+    localStorage.setItem('ziyara_palette', palette);
+    const meta = document.querySelector('meta[name=theme-color]');
+    if (meta) meta.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--bg-canvas').trim());
+  }, [palette, theme]);
+
+  useEffect(() => {
+    localStorage.setItem('ziyara_ar_size', String(arSize));
+  }, [arSize]);
+
   const toggleTheme = () => setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
 
   return (
@@ -56,6 +77,10 @@ export function AppShellProvider({ children }: { children: React.ReactNode }) {
         setLang: setLangState,
         theme,
         toggleTheme,
+        palette,
+        setPalette: setPaletteState,
+        arSize,
+        setArSize: setArSizeState,
         isOnline,
         t: dictionary[lang],
       }}

@@ -1,19 +1,7 @@
 import type { Metadata, Viewport } from 'next';
-import { Fraunces, Plus_Jakarta_Sans, Amiri, IBM_Plex_Sans_Arabic } from 'next/font/google';
+import { Amiri, IBM_Plex_Sans_Arabic } from 'next/font/google';
 import './globals.css';
 import { AppShellProvider } from '@/components/providers/app-shell-provider';
-
-const fraunces = Fraunces({
-  subsets: ['latin'],
-  variable: '--font-display-fr',
-  display: 'swap',
-});
-
-const jakarta = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-sans-fr',
-  display: 'swap',
-});
 
 const amiri = Amiri({
   subsets: ['arabic'],
@@ -23,7 +11,7 @@ const amiri = Amiri({
 });
 
 const ibmArabic = IBM_Plex_Sans_Arabic({
-  subsets: ['arabic'],
+  subsets: ['arabic', 'latin'],
   weight: ['400', '500', '600', '700'],
   variable: '--font-sans-ar',
   display: 'swap',
@@ -36,7 +24,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0E4D3E',
+  themeColor: '#F4EEE1',
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
@@ -48,9 +36,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="fr"
       dir="ltr"
       data-theme="light"
-      className={`${fraunces.variable} ${jakarta.variable} ${amiri.variable} ${ibmArabic.variable}`}
+      data-palette="A"
+      className={`${amiri.variable} ${ibmArabic.variable}`}
       suppressHydrationWarning
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var d=document.documentElement,l=localStorage;var th=l.getItem('ziyara_theme'),p=l.getItem('ziyara_palette'),g=l.getItem('ziyara_lang');if(th==='dark'||th==='light')d.setAttribute('data-theme',th);if(p==='A'||p==='B')d.setAttribute('data-palette',p);if(g==='ar'){d.lang='ar';d.dir='rtl'}}catch(e){}`,
+          }}
+        />
+      </head>
       <body className="min-h-dvh antialiased selection:bg-[var(--accent-primary-soft)]">
         <AppShellProvider>{children}</AppShellProvider>
       </body>

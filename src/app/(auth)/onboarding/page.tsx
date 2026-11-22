@@ -91,7 +91,7 @@ export default function OnboardingPage() {
     <main className="min-h-dvh flex items-center justify-center p-5 zellige-pattern">
       <section className="w-full max-w-md rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-6 shadow-sm">
         <div className="mb-6">
-          <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[var(--accent-gold-soft)] text-[var(--accent-gold)] mb-2">
+          <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-[var(--accent-gold-soft)] text-[var(--accent-gold-text)] mb-2">
             {isAr ? 'تفعيل الحساب' : 'Première connexion'}
           </span>
           <h1 className="font-display text-2xl font-bold text-[var(--accent-primary)]">

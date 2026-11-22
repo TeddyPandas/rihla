@@ -473,7 +473,7 @@ export default function CheikhRealtimeDashboard() {
                       </div>
                       <div
                         className={`text-xs font-semibold ${
-                          rem === 0 ? 'text-[var(--accent-gold)]' : 'text-[var(--status-late)]'
+                          rem === 0 ? 'text-[var(--accent-gold-text)]' : 'text-[var(--status-late)]'
                         }`}
                       >
                         {rem === 0 ? 'Terminé' : `Reste : ${rem.toLocaleString()}`}
@@ -578,7 +578,7 @@ export default function CheikhRealtimeDashboard() {
       </section>
 
       {editingEntry && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-[var(--scrim)] flex items-center justify-center p-4">
           <form
             onSubmit={handleSubmitCorrection}
             className="w-full max-w-md rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 space-y-4"

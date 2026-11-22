@@ -213,7 +213,7 @@ export default function CheikhMembersPage() {
                   <div className="font-semibold text-sm flex items-center gap-2">
                     <span>{m.full_name || (isAr ? 'بدون اسم بعد' : 'Nom non renseigné')}</span>
                     {m.role === 'cheikh' && (
-                      <span className="px-2 py-0.5 rounded-full text-[11px] bg-[var(--accent-gold-soft)] text-[var(--accent-gold)] font-bold">
+                      <span className="px-2 py-0.5 rounded-full text-[11px] bg-[var(--accent-gold-soft)] text-[var(--accent-gold-text)] font-bold">
                         Gestionnaire
                       </span>
                     )}

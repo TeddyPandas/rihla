@@ -7,8 +7,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Suivi collectif et hors-ligne des zikr pour la ziyara à Fès (19–27 déc. 2026)',
     start_url: '/',
     display: 'standalone',
-    background_color: '#FAF7F0',
-    theme_color: '#0E4D3E',
+    background_color: '#F4EEE1',
+    theme_color: '#1F4D3A',
     orientation: 'portrait',
     icons: [
       {
@@ -20,6 +20,12 @@ export default function manifest(): MetadataRoute.Manifest {
         src: '/icons/icon-512.png',
         sizes: '512x512',
         type: 'image/png',
+      },
+      {
+        src: '/icons/maskable-512.png',
+        sizes: '512x512',
+        type: 'image/png',
+        purpose: 'maskable',
       },
     ],
   };
