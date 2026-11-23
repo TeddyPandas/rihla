@@ -13,6 +13,7 @@ export default function CheikhAdminLayout({ children }: { children: React.ReactN
   const tabs = [
     { href: '/admin', label: isAr ? 'لوحة المتابعة' : 'Tableau de bord' },
     { href: '/admin/zikr', label: isAr ? 'الأذكار والأهداف' : 'Zikr & Objectifs' },
+    { href: '/admin/voyage', label: isAr ? 'الرحلة' : 'Voyage' },
     { href: '/admin/members', label: isAr ? 'الأعضاء' : 'Membres' },
     { href: '/admin/redistribute', label: isAr ? 'إعادة التوزيع' : 'Redistribution' },
     { href: '/admin/analytics', label: isAr ? 'الإحصائيات' : 'Graphiques' },

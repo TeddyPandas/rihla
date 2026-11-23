@@ -151,6 +151,8 @@ export async function flushOutboxAndPull(ziyaraId: string): Promise<boolean> {
               scope: d.scope,
               defaultSlot: d.default_slot,
               sortOrder: d.sort_order,
+              slotPlan: d.slot_plan ?? null,
+              distributionMode: d.distribution_mode ?? 'split',
             }))
           );
         }

@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
-import { normalizePhoneToE164, e164ToInternalEmail } from '@/lib/auth/phone';
+import { normalizePhoneToE164, e164ToInternalEmail, sanitizePhoneDigits } from '@/lib/auth/phone';
 import { useAppShell } from '@/components/providers/app-shell-provider';
 import type { CountryCode } from 'libphonenumber-js';
 
@@ -176,13 +176,15 @@ export default function LoginPage() {
               </select>
               <input
                 type="tel"
-                inputMode="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={10}
                 autoComplete="tel"
                 required
                 autoFocus
                 placeholder={country === 'SN' ? '77 123 45 67' : '6 12 34 56 78'}
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(sanitizePhoneDigits(e.target.value))}
                 className="flex-1 min-w-0 w-full h-full px-4 bg-transparent text-lg tabular-nums focus:outline-none"
               />
             </div>

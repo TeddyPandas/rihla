@@ -21,6 +21,8 @@ export interface LocalZikrDef {
   scope: 'daily' | 'stay';
   defaultSlot: TimeSlot;
   sortOrder: number;
+  slotPlan?: { slot: TimeSlot; qty: number }[] | null;
+  distributionMode?: 'split' | 'per_person';
 }
 
 export interface LocalGoal {

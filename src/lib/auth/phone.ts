@@ -21,3 +21,8 @@ export function e164ToInternalEmail(e164: string): string {
   }
   return `${digits}@ziyara.local`;
 }
+
+/** Ne garde que les chiffres (saisie du téléphone), limités à `max` caractères. */
+export function sanitizePhoneDigits(raw: string, max = 10): string {
+  return raw.replace(/\D/g, '').slice(0, max);
+}

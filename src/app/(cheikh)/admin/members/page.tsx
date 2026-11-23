@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useAppShell } from '@/components/providers/app-shell-provider';
 import type { CountryCode } from 'libphonenumber-js';
+import { sanitizePhoneDigits } from '@/lib/auth/phone';
 
 interface MemberRow {
   id: string;
@@ -131,7 +132,10 @@ export default function CheikhMembersPage() {
                 required
                 placeholder="77 123 45 67"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => setPhone(sanitizePhoneDigits(e.target.value))}
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={10}
                 className="flex-1 h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-sm tabular-nums"
               />
             </div>
