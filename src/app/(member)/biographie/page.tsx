@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import chaptersData from '@/content/biography-sample.json';
+import chaptersData from '@/content/biography.json';
 import { useAppShell } from '@/components/providers/app-shell-provider';
 
 interface BioChapter {
@@ -38,7 +38,7 @@ export default function SeydinaCheikhBiographyPage() {
             {isAr ? 'فضاء القراءة (متاح بدون إنترنت)' : 'Lecture hors-ligne'}
           </span>
           <h2 className="font-display text-lg font-bold text-[var(--accent-primary)]">
-            {isAr ? 'سيرة سيدنا الشيخ' : 'Biographie de Seydina Cheikh'}
+            {isAr ? 'سيرة سيدنا الشيخ' : 'Vie de Cheikh Ahmed Tijani'}
           </h2>
         </div>
 
@@ -80,7 +80,7 @@ export default function SeydinaCheikhBiographyPage() {
                   : 'border-[var(--border-subtle)] bg-[var(--bg-elevated)] text-[var(--text-primary)]'
               }`}
             >
-              {isAr ? `الفصل ${ch.chapterNumber}` : `Chapitre ${ch.chapterNumber}`}
+              {isAr && ch.titleAr ? ch.titleAr : ch.titleFr}
             </button>
           );
         })}
@@ -97,15 +97,15 @@ export default function SeydinaCheikhBiographyPage() {
           )}
 
           <h3 className="font-display text-xl sm:text-2xl font-bold text-[var(--accent-primary)]">
-            {isAr ? current.titleAr : current.titleFr}
+            {isAr && current.titleAr ? current.titleAr : current.titleFr}
           </h3>
 
           <div
             className={`space-y-4 text-[var(--text-primary)] ${textSizeClass} ${
-              isAr ? 'font-arabic-script' : ''
+              isAr && current.paragraphsAr.length > 0 ? 'font-arabic-script' : ''
             }`}
           >
-            {(isAr ? current.paragraphsAr : current.paragraphsFr).map((para, i) => (
+            {(isAr && current.paragraphsAr.length > 0 ? current.paragraphsAr : current.paragraphsFr).map((para, i) => (
               <p key={i}>{para}</p>
             ))}
           </div>

@@ -100,7 +100,7 @@ export default function MemberLayout({ children }: { children: React.ReactNode }
         </div>
       )}
 
-      <main className="flex-1 max-w-lg w-full mx-auto px-5 pt-4 safe-top">
+      <main className="flex-1 max-w-lg md:max-w-2xl w-full mx-auto px-5 pt-4 safe-top">
         <div className="mb-5 space-y-1">
           <div className="flex items-center justify-between gap-3">
             <div className="text-sm text-[var(--text-secondary)] truncate">
@@ -140,7 +140,7 @@ export default function MemberLayout({ children }: { children: React.ReactNode }
         aria-label="Navigation"
         className="fixed bottom-0 inset-x-0 z-30 border-t border-[var(--border-subtle)] bg-[var(--bg-elevated)] safe-bottom"
       >
-        <div className="max-w-lg mx-auto grid grid-cols-5">
+        <div className="max-w-lg md:max-w-2xl mx-auto grid grid-cols-5">
           {navItems.map((item) => {
             const active = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
             return (
