@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { offlineDb, type LocalZikrDef, type TimeSlot } from '@/lib/offline/db';
+import { offlineDb, type LocalGroupSummary, type LocalZikrDef, type TimeSlot } from '@/lib/offline/db';
 import {
   recordZikrEntryOfflineFirst,
   cancelZikrEntryOfflineFirst,
@@ -10,6 +10,17 @@ import {
 import { getFesTodayDate, getFesPrayerTimes } from '@/lib/prayer/fes-schedule';
 import { useAppShell } from '@/components/providers/app-shell-provider';
 import { CounterSheet } from '@/components/member/counter-sheet';
+
+interface CardView {
+  key: string;
+  zikr: LocalZikrDef;
+  slot: TimeSlot;
+  effectiveTarget: number;
+  donePersonal: number;
+  remaining: number;
+  pct: number;
+  groupSummary?: LocalGroupSummary;
+}
 
 const SLOT_ORDER: TimeSlot[] = [
   'morning',
@@ -33,19 +44,24 @@ export default function MemberProgramPage() {
   const groupSummary = useLiveQuery(() => offlineDb.groupSummary.toArray(), []) ?? [];
 
   const fesToday = useMemo(() => getFesTodayDate(), []);
-  const [selectedDate, setSelectedDate] = useState<string>(() => {
-    if (fesToday >= '2026-12-19' && fesToday <= '2026-12-27') return fesToday;
-    return '2026-12-19';
-  });
+  const startDate = profile?.startDate || '2026-12-19';
+  const endDate = profile?.endDate || '2026-12-27';
+  const [pickedDate, setPickedDate] = useState<string | null>(null);
+  const selectedDate =
+    pickedDate && pickedDate >= startDate && pickedDate <= endDate
+      ? pickedDate
+      : fesToday >= startDate && fesToday <= endDate
+      ? fesToday
+      : startDate;
 
-  const [activeZikr, setActiveZikr] = useState<LocalZikrDef | null>(null);
+  const [activeCard, setActiveCard] = useState<CardView | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   const prayerTimes = useMemo(() => getFesPrayerTimes(selectedDate), [selectedDate]);
 
   const stayDates = useMemo(() => {
-    const start = profile?.startDate || '2026-12-19';
-    const end = profile?.endDate || '2026-12-27';
+    const start = startDate;
+    const end = endDate;
     const list: string[] = [];
     const cur = new Date(`${start}T00:00:00Z`);
     const last = new Date(`${end}T00:00:00Z`);
@@ -54,9 +70,9 @@ export default function MemberProgramPage() {
       cur.setUTCDate(cur.getUTCDate() + 1);
     }
     return list;
-  }, [profile]);
+  }, [startDate, endDate]);
 
-  const zikrCards = useMemo(() => {
+  const baseCards = useMemo(() => {
     return zikrDefs.map((z) => {
       const matchingGoals = goals.filter(
         (g) => g.zikrId === z.id && (g.targetDate === selectedDate || g.targetDate === null)
@@ -82,6 +98,7 @@ export default function MemberProgramPage() {
       const gSum = groupSummary.find((s) => s.zikrId === z.id);
 
       return {
+        key: z.id,
         zikr: z,
         slot,
         effectiveTarget,
@@ -89,9 +106,42 @@ export default function MemberProgramPage() {
         remaining,
         pct,
         groupSummary: gSum,
-      };
+      } as CardView;
     });
   }, [zikrDefs, goals, entries, selectedDate, groupSummary]);
+
+  // Un zikr avec un plan « après chaque prière » est affiché en une carte par créneau :
+  // l'objectif du jour est découpé selon les quantités du plan, et le fait remplit les créneaux dans l'ordre.
+  const zikrCards = useMemo(() => {
+    const out: CardView[] = [];
+    for (const c of baseCards) {
+      const plan = c.zikr.slotPlan;
+      if (!plan || plan.length === 0 || c.effectiveTarget <= 0) {
+        out.push(c);
+        continue;
+      }
+      const sum = plan.reduce((a, p) => a + p.qty, 0) || 1;
+      let left = c.effectiveTarget;
+      let doneLeft = c.donePersonal;
+      plan.forEach((p, i) => {
+        const isLast = i === plan.length - 1;
+        const target = isLast ? left : Math.min(left, Math.floor((c.effectiveTarget * p.qty) / sum));
+        left -= target;
+        const done = isLast ? Math.max(0, doneLeft) : Math.min(target, doneLeft);
+        doneLeft -= done;
+        out.push({
+          ...c,
+          key: `${c.zikr.id}:${p.slot}`,
+          slot: p.slot,
+          effectiveTarget: target,
+          donePersonal: done,
+          remaining: Math.max(0, target - done),
+          pct: target > 0 ? Math.min(100, Math.round((done / target) * 100)) : 100,
+        });
+      });
+    }
+    return out;
+  }, [baseCards]);
 
   const groupedBySlot = useMemo(() => {
     return SLOT_ORDER.map((slot) => ({
@@ -107,17 +157,17 @@ export default function MemberProgramPage() {
   }, [entries, selectedDate]);
 
   async function handleSave(qty: number) {
-    if (!activeZikr || !profile?.ziyaraId || qty <= 0) return;
+    if (!activeCard || !profile?.ziyaraId || qty <= 0) return;
     setSubmitting(true);
     try {
       await recordZikrEntryOfflineFirst({
         ziyaraId: profile.ziyaraId,
-        zikrId: activeZikr.id,
+        zikrId: activeCard.zikr.id,
         entryDate: selectedDate,
         quantity: qty,
         source: 'personal',
       });
-      setActiveZikr(null);
+      setActiveCard(null);
     } finally {
       setSubmitting(false);
     }
@@ -131,7 +181,7 @@ export default function MemberProgramPage() {
     });
   }
 
-  const totals = zikrCards.reduce(
+  const totals = baseCards.reduce(
     (acc, c) => {
       if (c.effectiveTarget > 0) {
         acc.target += c.effectiveTarget;
@@ -180,7 +230,7 @@ export default function MemberProgramPage() {
             <button
               key={d}
               type="button"
-              onClick={() => setSelectedDate(d)}
+              onClick={() => setPickedDate(d)}
               aria-pressed={active}
               className={`shrink-0 h-14 px-4 rounded-xl border-[1.5px] text-xs font-semibold tabular-nums transition-colors ${
                 active
@@ -225,7 +275,8 @@ export default function MemberProgramPage() {
         groupedBySlot.map(({ slot, items }) => (
           <section key={slot} className="space-y-3">
             <h2 className="text-sm font-semibold text-[var(--text-secondary)] px-1">{t.slots[slot]}</h2>
-            {items.map(({ zikr, effectiveTarget, donePersonal, remaining, pct, groupSummary: gs }) => {
+            {items.map((card) => {
+              const { zikr, effectiveTarget, donePersonal, remaining, pct, groupSummary: gs } = card;
               const completed = remaining === 0;
               const started = donePersonal > 0;
               const badge = completed
@@ -235,9 +286,9 @@ export default function MemberProgramPage() {
                 : { cls: 'bg-[var(--bg-surface)] text-[var(--text-secondary)]', label: isAr ? 'لم يبدأ' : 'Pas commencé' };
               return (
                 <button
-                  key={zikr.id}
+                  key={card.key}
                   type="button"
-                  onClick={() => setActiveZikr(zikr)}
+                  onClick={() => setActiveCard(card)}
                   className={`w-full text-start rounded-2xl border-[1.5px] bg-[var(--bg-elevated)] p-4 space-y-3 transition-colors ${
                     started && !completed ? 'border-[var(--accent-gold)]' : 'border-[var(--border-subtle)]'
                   }`}
@@ -329,14 +380,14 @@ export default function MemberProgramPage() {
         </section>
       )}
 
-      {activeZikr && (
+      {activeCard && (
         <CounterSheet
-          zikr={activeZikr}
-          target={zikrCards.find((c) => c.zikr.id === activeZikr.id)?.effectiveTarget ?? 0}
-          done={zikrCards.find((c) => c.zikr.id === activeZikr.id)?.donePersonal ?? 0}
+          zikr={activeCard.zikr}
+          target={activeCard.effectiveTarget}
+          done={activeCard.donePersonal}
           arSize={arSize}
           submitting={submitting}
-          onClose={() => setActiveZikr(null)}
+          onClose={() => setActiveCard(null)}
           onSave={handleSave}
         />
       )}
