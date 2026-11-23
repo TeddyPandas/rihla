@@ -1,5 +1,6 @@
 export type Lang = 'fr' | 'ar';
 export type ThemeMode = 'light' | 'dark';
+export type Palette = 'A' | 'B';
 
 export const dictionary = {
   fr: {
@@ -15,6 +16,8 @@ export const dictionary = {
     navPot: 'Réserve',
     navNotifs: 'Alertes',
     navBio: 'Biographie',
+    navHistory: 'Historique',
+    navProfile: 'Profil',
     navAdmin: 'Gestionnaire',
     slots: {
       morning: 'Matin',
@@ -40,6 +43,8 @@ export const dictionary = {
     navPot: 'الاحتياطي',
     navNotifs: 'التنبيهات',
     navBio: 'السيرة',
+    navHistory: 'السجل',
+    navProfile: 'حسابي',
     navAdmin: 'المسؤول',
     slots: {
       morning: 'الصباح',

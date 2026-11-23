@@ -35,3 +35,9 @@ Décisions prises le 21/11/2026 :
 Reste à trancher : les zikr (modèles) peuvent-ils être copiés d'un voyage à l'autre ?
 
 **Prochaine étape : réfléchir à l'implémentation le 22/11/2026.**
+
+## Design (branche `feat/design`)
+- Design repris de la branche `zikr-pwa` (maquette « Zikr — disciple ») : palettes vert/or et bleu nuit, clair/sombre, connexion en 2 étapes, compteur en anneau, barre d'onglets à icônes. Source de la maquette dans `design/`.
+- Nouveaux écrans membre : Historique, Profil (langue, palette, mode sombre, taille du texte arabe, synchro, déconnexion). La Biographie est accessible depuis le Profil.
+- Espace gestionnaire restylé dans le même langage (bandeau coloré, bouton de palette). Pas de maquette dédiée : à valider visuellement.
+- À vérifier sur téléphone : lisibilité en bleu nuit, taille du texte arabe, déconnexion avec récitations en attente.

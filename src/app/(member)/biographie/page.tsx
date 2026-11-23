@@ -34,7 +34,7 @@ export default function SeydinaCheikhBiographyPage() {
     <div className="space-y-4 pb-8">
       <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <span className="text-xs font-bold uppercase tracking-wider text-[var(--accent-gold)]">
+          <span className="text-xs font-bold text-[var(--accent-gold-text)]">
             {isAr ? 'فضاء القراءة (متاح بدون إنترنت)' : 'Lecture hors-ligne'}
           </span>
           <h2 className="font-display text-lg font-bold text-[var(--accent-primary)]">

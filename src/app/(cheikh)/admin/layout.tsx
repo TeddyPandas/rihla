@@ -7,7 +7,7 @@ import { useAppShell } from '@/components/providers/app-shell-provider';
 
 export default function CheikhAdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const { lang, setLang, theme, toggleTheme } = useAppShell();
+  const { lang, setLang, theme, toggleTheme, palette, setPalette } = useAppShell();
   const isAr = lang === 'ar';
 
   const tabs = [
@@ -18,54 +18,62 @@ export default function CheikhAdminLayout({ children }: { children: React.ReactN
     { href: '/admin/analytics', label: isAr ? 'الإحصائيات' : 'Graphiques' },
   ];
 
+  const chip =
+    'h-11 min-w-11 px-3.5 rounded-xl border-[1.5px] border-white/25 text-sm font-semibold flex items-center justify-center text-[var(--hero-text)] hover:bg-white/10 transition-colors';
+
   return (
     <div className="min-h-dvh flex flex-col pb-12">
-      <header className="sticky top-0 z-30 border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)]/95 backdrop-blur px-4 py-3">
-        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <span className="px-2.5 py-1 rounded-lg bg-[var(--accent-gold-soft)] text-[var(--accent-gold)] text-xs font-bold uppercase">
-              {isAr ? 'فضاء المسؤول' : 'Espace Gestionnaire'}
-            </span>
-            <h1 className="font-display text-lg font-bold text-[var(--accent-primary)]">
-              {isAr ? 'زيارة فاس ٢٠٢٦' : 'Ziyara Fès 2026'}
-            </h1>
+      <header className="sticky top-0 z-30 bg-[var(--hero-bg)] text-[var(--hero-text)] safe-top shadow-sm">
+        <div className="max-w-5xl mx-auto px-4 pt-3 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <svg width="36" height="36" viewBox="0 0 44 44" fill="none" aria-hidden="true" className="shrink-0">
+              <circle cx="22" cy="22" r="16" stroke="var(--hero-text)" strokeWidth="2" />
+              <circle cx="22" cy="6" r="4.5" fill="var(--hero-accent)" />
+            </svg>
+            <div className="min-w-0">
+              <div className="text-xs font-semibold text-[var(--hero-accent)]">
+                {isAr ? 'فضاء المسؤول' : 'Espace Gestionnaire'}
+              </div>
+              <h1 className="text-lg font-semibold leading-tight truncate">
+                {isAr ? 'زيارة فاس ٢٠٢٦' : 'Ziyara Fès 2026'}
+              </h1>
+            </div>
           </div>
 
           <div className="flex items-center gap-2">
-            <Link
-              href="/"
-              className="h-10 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-xs font-semibold flex items-center"
-            >
+            <Link href="/" className={chip}>
               {isAr ? 'واجهة المريد' : 'Vue Membre'}
             </Link>
             <button
               type="button"
-              onClick={() => setLang(isAr ? 'fr' : 'ar')}
-              className="h-10 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-xs font-semibold"
+              onClick={() => setPalette(palette === 'A' ? 'B' : 'A')}
+              aria-label={isAr ? 'تبديل الألوان' : 'Changer de palette'}
+              title={isAr ? 'تبديل الألوان' : 'Changer de palette'}
+              className={chip}
             >
+              <span className="h-5 w-5 rounded-full border border-white/40" style={{ background: 'linear-gradient(135deg, var(--hero-bg) 50%, var(--hero-accent) 50%)' }} />
+            </button>
+            <button type="button" onClick={() => setLang(isAr ? 'fr' : 'ar')} lang={isAr ? 'fr' : 'ar'} className={chip}>
               {isAr ? 'FR' : 'عربي'}
             </button>
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="h-10 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-xs font-semibold"
-            >
+            <button type="button" onClick={toggleTheme} aria-label={isAr ? 'تغيير المظهر' : 'Changer de thème'} className={chip}>
               {theme === 'light' ? '☾' : '☀'}
             </button>
           </div>
         </div>
 
-        <nav className="max-w-5xl mx-auto flex gap-1.5 overflow-x-auto pt-3 pb-1 no-scrollbar">
+        <nav aria-label="Navigation gestionnaire" className="max-w-5xl mx-auto flex gap-1 overflow-x-auto px-4 pt-3 no-scrollbar">
           {tabs.map((tab) => {
             const active = pathname === tab.href;
             return (
               <Link
                 key={tab.href}
                 href={tab.href}
-                className={`shrink-0 h-10 px-4 rounded-xl text-xs sm:text-sm font-semibold flex items-center transition-colors ${
+                aria-current={active ? 'page' : undefined}
+                className={`shrink-0 h-11 px-4 rounded-t-xl text-sm font-semibold flex items-center transition-colors ${
                   active
-                    ? 'bg-[var(--accent-primary)] text-[var(--text-on-accent)]'
-                    : 'bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
+                    ? 'bg-[var(--bg-canvas)] text-[var(--text-primary)]'
+                    : 'text-[var(--hero-text)]/75 hover:text-[var(--hero-text)]'
                 }`}
               >
                 {tab.label}

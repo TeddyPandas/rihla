@@ -229,7 +229,7 @@ export default function CheikhRedistributePage() {
         ) : (
           <form onSubmit={handleValidateRedistribution} className="space-y-5">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-[var(--text-secondary)] mb-1.5">
+              <label className="block text-sm font-semibold text-[var(--text-secondary)] mb-1.5">
                 {isAr ? '١. اختر العضو المتأخر والذكر' : '1. Sélectionner le membre en retard & le Zikr'}
               </label>
               <select
