@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { getManagedZiyara, pickMemberRow } from '@/lib/ziyara/current';
 import { useAppShell } from '@/components/providers/app-shell-provider';
 import type { TimeSlot } from '@/lib/offline/db';
 import { listDays, previewDistribution, type DistributionMode } from '@/lib/distribution';
@@ -52,7 +53,7 @@ export default function CheikhZikrConfigPage() {
 
   const loadData = useCallback(async () => {
     const supabase = createClient();
-    const { data: zData } = await supabase.from('ziyaras').select('id, start_date, end_date').eq('is_active', true).limit(1).single();
+    const zData = await getManagedZiyara(supabase);
     if (!zData) return;
     setZiyara(zData);
     setSingleDate((p) => p || zData.start_date);

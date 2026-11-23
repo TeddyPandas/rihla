@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { offlineDb } from '@/lib/offline/db';
 import { useAppShell } from '@/components/providers/app-shell-provider';
+import { getManagedZiyara, setSelectedZiyaraId } from '@/lib/ziyara/current';
 
 interface Ziyara {
   id: string;
@@ -13,6 +14,7 @@ interface Ziyara {
   timezone: string;
   start_date: string;
   end_date: string;
+  is_active?: boolean;
 }
 
 const TIMEZONES = ['Africa/Casablanca', 'Africa/Dakar', 'Europe/Paris', 'Asia/Riyadh', 'Africa/Algiers', 'Africa/Tunis'];
@@ -33,15 +35,19 @@ export default function VoyagePage() {
   const [f, setF] = useState<Ziyara | null>(null);
   const [shift, setShift] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [allZ, setAllZ] = useState<Ziyara[]>([]);
+  const [nz, setNz] = useState({ title_fr: '', title_ar: '', city: 'Fès', start_date: '', end_date: '', copyFrom: '', copyMembers: false });
   const [fb, setFb] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null);
 
   const load = useCallback(async () => {
     const supabase = createClient();
-    const { data } = await supabase.from('ziyaras').select('*').eq('is_active', true).order('start_date').limit(1).maybeSingle();
+    const data = await getManagedZiyara<Ziyara>(supabase, '*');
     if (data) {
-      setOrig(data as Ziyara);
-      setF(data as Ziyara);
+      setOrig(data);
+      setF(data);
     }
+    const { data: all } = await supabase.from('ziyaras').select('*').order('start_date', { ascending: false });
+    setAllZ((all ?? []) as Ziyara[]);
   }, []);
 
   useEffect(() => {
@@ -83,7 +89,7 @@ export default function VoyagePage() {
       if (error) throw error;
       // Le profil hors ligne (dates, titres) est rafraîchi à la prochaine synchro ; on le met à jour tout de suite.
       const prof = await offlineDb.profile.toCollection().first();
-      if (prof) {
+      if (prof && prof.ziyaraId === f.id) {
         await offlineDb.profile.put({
           ...prof,
           ziyaraTitleFr: f.title_fr,
@@ -112,12 +118,46 @@ export default function VoyagePage() {
     }
   }
 
+  function manage(id: string) {
+    setSelectedZiyaraId(id);
+    setFb(null);
+    void load();
+  }
+
+  async function makeActive(id: string) {
+    const { error } = await createClient().rpc('set_active_ziyara', { p_ziyara_id: id });
+    setFb(error ? { type: 'err', msg: error.message } : { type: 'ok', msg: isAr ? 'أصبحت هذه الرحلة هي الظاهرة للأعضاء.' : 'Ce voyage est maintenant celui que voient les membres.' });
+    await load();
+  }
+
+  async function createVoyage(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setFb(null);
+    const { data, error } = await createClient().rpc('create_ziyara', {
+      p_title_fr: nz.title_fr.trim(),
+      p_title_ar: nz.title_ar.trim() || nz.title_fr.trim(),
+      p_city: nz.city.trim(),
+      p_timezone: 'Africa/Casablanca',
+      p_start: nz.start_date,
+      p_end: nz.end_date,
+      p_copy_from: nz.copyFrom || null,
+      p_copy_members: !!nz.copyFrom && nz.copyMembers,
+    });
+    setBusy(false);
+    if (error) return setFb({ type: 'err', msg: error.message });
+    setSelectedZiyaraId(data as string);
+    setNz({ title_fr: '', title_ar: '', city: 'Fès', start_date: '', end_date: '', copyFrom: '', copyMembers: false });
+    setFb({ type: 'ok', msg: isAr ? 'تم إنشاء الرحلة.' : 'Voyage créé. Vous le gérez maintenant ; utilisez « Rendre actif » pour que les membres le voient.' });
+    await load();
+  }
+
   const input =
     'w-full h-12 px-3 rounded-xl border-[1.5px] border-[var(--border-subtle)] bg-[var(--bg-canvas)] text-base focus:outline-none focus:border-[var(--accent-primary)]';
   const label = 'block text-sm font-semibold text-[var(--text-secondary)] mb-1.5';
 
   return (
-    <div className="space-y-5 max-w-2xl">
+    <div className="space-y-5 max-w-3xl">
       <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 space-y-1">
         <h2 className="text-xl font-semibold">{isAr ? 'الرحلة' : 'Voyage'}</h2>
         <p className="text-sm text-[var(--text-secondary)]">
@@ -125,6 +165,28 @@ export default function VoyagePage() {
             ? 'عدّل الاسم والمكان والتواريخ. لاختبار التطبيق قبل الموعد، أزح التواريخ إلى اليوم.'
             : 'Modifiez le nom, le lieu et les dates. Pour tester avant le départ, décalez les dates à aujourd’hui.'}
         </p>
+      </section>
+
+      <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 space-y-3">
+        <h3 className="text-lg font-semibold">{isAr ? 'رحلاتي' : 'Mes voyages'}</h3>
+        <div className="divide-y divide-[var(--border-subtle)]">
+          {allZ.map((z) => (
+            <div key={z.id} className="py-3 flex flex-wrap items-center justify-between gap-3">
+              <div className="min-w-0">
+                <div className="font-semibold">{isAr ? z.title_ar : z.title_fr}</div>
+                <div className="text-xs text-[var(--text-secondary)] tabular-nums">
+                  {z.start_date} → {z.end_date}
+                  {z.id === orig.id && <span className="ms-2 px-2 py-0.5 rounded-full bg-[var(--accent-primary-soft)] text-[var(--accent-primary)] font-semibold">{isAr ? 'قيد الإدارة' : 'En gestion'}</span>}
+                  {z.is_active && <span className="ms-2 px-2 py-0.5 rounded-full bg-[var(--status-ok-soft)] text-[var(--status-ok)] font-semibold">{isAr ? 'ظاهر للأعضاء' : 'Vu par les membres'}</span>}
+                </div>
+              </div>
+              <div className="flex gap-2">
+                {z.id !== orig.id && <button type="button" onClick={() => manage(z.id)} className="h-10 px-4 rounded-xl border-[1.5px] border-[var(--border-subtle)] text-sm font-semibold">{isAr ? 'إدارة' : 'Gérer'}</button>}
+                {!z.is_active && <button type="button" onClick={() => makeActive(z.id)} className="h-10 px-4 rounded-xl border-[1.5px] border-[var(--accent-primary)] text-[var(--accent-primary)] text-sm font-semibold">{isAr ? 'تفعيل' : 'Rendre actif'}</button>}
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       <form onSubmit={save} className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -210,6 +272,31 @@ export default function VoyagePage() {
             {isAr ? 'إلغاء' : 'Annuler'}
           </button>
         </div>
+      </form>
+
+      <form onSubmit={createVoyage} className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <h3 className="sm:col-span-2 text-lg font-semibold">{isAr ? 'رحلة جديدة' : 'Nouveau voyage'}</h3>
+        <div><label className={label}>{isAr ? 'الاسم (فرنسية)' : 'Nom (français)'}</label><input className={input} required value={nz.title_fr} onChange={(e) => setNz({ ...nz, title_fr: e.target.value })} /></div>
+        <div><label className={label}>{isAr ? 'الاسم (عربية)' : 'Nom (arabe)'}</label><input className={input} dir="rtl" lang="ar" value={nz.title_ar} onChange={(e) => setNz({ ...nz, title_ar: e.target.value })} /></div>
+        <div><label className={label}>{isAr ? 'المدينة' : 'Lieu'}</label><input className={input} value={nz.city} onChange={(e) => setNz({ ...nz, city: e.target.value })} /></div>
+        <div />
+        <div><label className={label}>{isAr ? 'تاريخ البداية' : 'Date de début'}</label><input type="date" className={input} required value={nz.start_date} onChange={(e) => setNz({ ...nz, start_date: e.target.value, end_date: nz.end_date < e.target.value ? e.target.value : nz.end_date })} /></div>
+        <div><label className={label}>{isAr ? 'تاريخ النهاية' : 'Date de fin'}</label><input type="date" className={input} required min={nz.start_date} value={nz.end_date} onChange={(e) => setNz({ ...nz, end_date: e.target.value })} /></div>
+        <div className="sm:col-span-2">
+          <label className={label}>{isAr ? 'نسخ الأذكار من رحلة' : 'Copier les zikr d’un voyage'}</label>
+          <select className={input} value={nz.copyFrom} onChange={(e) => setNz({ ...nz, copyFrom: e.target.value })}>
+            <option value="">{isAr ? 'لا شيء (رحلة فارغة)' : 'Aucun (voyage vide)'}</option>
+            {allZ.map((z) => <option key={z.id} value={z.id}>{isAr ? z.title_ar : z.title_fr}</option>)}
+          </select>
+          {nz.copyFrom && (
+            <label className="flex items-center gap-3 mt-3 text-sm">
+              <input type="checkbox" className="h-5 w-5 accent-[var(--accent-primary)]" checked={nz.copyMembers} onChange={(e) => setNz({ ...nz, copyMembers: e.target.checked })} />
+              {isAr ? 'إضافة نفس الأعضاء أيضًا' : 'Ajouter aussi les mêmes membres (même compte, aucun nouveau mot de passe)'}
+            </label>
+          )}
+          <p className="text-xs text-[var(--text-secondary)] mt-2">{isAr ? 'تُنسخ الأذكار وخطط الصلوات دون الأهداف.' : 'Les zikr et leurs plans par prière sont copiés, sans les objectifs ni les saisies.'}</p>
+        </div>
+        <div className="sm:col-span-2"><button type="submit" disabled={busy} className="h-12 px-6 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-semibold disabled:opacity-50">{busy ? '…' : isAr ? 'إنشاء' : 'Créer le voyage'}</button></div>
       </form>
     </div>
   );

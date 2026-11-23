@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client';
 import { useAppShell } from '@/components/providers/app-shell-provider';
 import type { CountryCode } from 'libphonenumber-js';
 import { sanitizePhoneDigits } from '@/lib/auth/phone';
+import { getManagedZiyara } from '@/lib/ziyara/current';
 
 interface MemberRow {
   id: string;
@@ -29,13 +30,18 @@ export default function CheikhMembersPage() {
   const [defaultPassword, setDefaultPassword] = useState('Ziyara2026');
   const [fullName, setFullName] = useState('');
   const [creating, setCreating] = useState(false);
+  const [ziyaraId, setZiyaraId] = useState<string | null>(null);
   const [feedback, setFeedback] = useState<{ type: 'ok' | 'err'; msg: string } | null>(null);
 
   const loadMembers = useCallback(async () => {
     const supabase = createClient();
+    const z = await getManagedZiyara<{ id: string }>(supabase, 'id');
+    setZiyaraId(z?.id ?? null);
+    if (!z) { setLoading(false); return; }
     const { data } = await supabase
       .from('group_members')
       .select('id, ziyara_id, phone_e164, full_name, role, must_change_password, last_synced_at, created_at')
+      .eq('ziyara_id', z.id)
       .order('created_at', { ascending: true });
     if (data) setMembers(data as MemberRow[]);
     setLoading(false);
@@ -77,6 +83,7 @@ export default function CheikhMembersPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          ziyaraId: ziyaraId ?? undefined,
           country,
           phone,
           defaultPassword,

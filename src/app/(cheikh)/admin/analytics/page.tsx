@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { getManagedZiyara, pickMemberRow } from '@/lib/ziyara/current';
 import { useAppShell } from '@/components/providers/app-shell-provider';
 import { listDays } from '@/lib/distribution';
 import { BarChart, Donut, HBars, Heatmap, Kpi, Legend, LineChart } from '@/components/admin/charts';
@@ -32,7 +33,7 @@ export default function CheikhAnalyticsPage() {
 
   const load = useCallback(async () => {
     const supabase = createClient();
-    const { data: z } = await supabase.from('ziyaras').select('id, start_date, end_date').eq('is_active', true).limit(1).single();
+    const z = await getManagedZiyara(supabase);
     if (!z) return;
     setDays(listDays(z.start_date, z.end_date));
     const [d, m, g, e, p] = await Promise.all([

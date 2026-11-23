@@ -62,7 +62,7 @@ export default function OnboardingPage() {
         return;
       }
 
-      const { data: updatedMember, error: profileError } = await supabase
+      const { data: updatedRows, error: profileError } = await supabase
         .from('group_members')
         .update({
           full_name: fullName.trim(),
@@ -70,8 +70,8 @@ export default function OnboardingPage() {
           preferred_lang: lang,
         })
         .eq('user_id', user.id)
-        .select('role')
-        .single();
+        .select('role');
+      const updatedMember = updatedRows?.some((r) => r.role === 'cheikh') ? { role: 'cheikh' } : updatedRows?.[0] ?? null;
 
       if (profileError) {
         setErrorMsg(profileError.message);

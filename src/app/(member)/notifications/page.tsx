@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
+import { offlineDb } from '@/lib/offline/db';
+import { getManagedZiyara, pickMemberRow } from '@/lib/ziyara/current';
 import { useAppShell } from '@/components/providers/app-shell-provider';
 import {
   generateFesZikrRemindersIcs,
@@ -37,6 +39,43 @@ export default function MemberNotificationsAndRemindersPage() {
   const [prefs, setPrefs] = useState<ReminderPreferences>(DEFAULT_PREFS);
   const [memberId, setMemberId] = useState<string | null>(null);
   const [savedNotice, setSavedNotice] = useState(false);
+  const [pushState, setPushState] = useState<'unsupported' | 'off' | 'on' | 'denied'>('off');
+
+  useEffect(() => {
+    if (!('serviceWorker' in navigator) || !('PushManager' in window) || !process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY) {
+      setPushState('unsupported');
+      return;
+    }
+    if (Notification.permission === 'denied') { setPushState('denied'); return; }
+    void navigator.serviceWorker.getRegistration('/sw.js').then(async (reg) => {
+      const sub = await reg?.pushManager.getSubscription();
+      setPushState(sub ? 'on' : 'off');
+    });
+  }, []);
+
+  async function enablePush() {
+    if (!memberId) return;
+    try {
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') { setPushState(perm === 'denied' ? 'denied' : 'off'); return; }
+      const reg = await navigator.serviceWorker.register('/sw.js');
+      await navigator.serviceWorker.ready;
+      const key = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY as string;
+      const pad = '='.repeat((4 - (key.length % 4)) % 4);
+      const raw = atob((key + pad).replace(/-/g, '+').replace(/_/g, '/'));
+      const appKey = Uint8Array.from(raw, (c) => c.charCodeAt(0));
+      const sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: appKey });
+      const j = sub.toJSON();
+      const supabase = createClient();
+      await supabase.from('push_subscriptions').delete().eq('endpoint', j.endpoint as string);
+      const { error } = await supabase.from('push_subscriptions').insert({
+        member_id: memberId, endpoint: j.endpoint, p256dh: j.keys?.p256dh, auth: j.keys?.auth,
+      });
+      if (!error) setPushState('on');
+    } catch {
+      setPushState('off');
+    }
+  }
 
   useEffect(() => {
     const localPrefs = localStorage.getItem('ziyara_reminder_prefs');
@@ -56,12 +95,11 @@ export default function MemberNotificationsAndRemindersPage() {
       } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: member } = await supabase
+      const { data: rows } = await supabase
         .from('group_members')
-        .select('id, ziyara_id, reminder_prefs')
-        .eq('user_id', user.id)
-        .limit(1)
-        .maybeSingle();
+        .select('id, ziyara_id, reminder_prefs, ziyaras(is_active, start_date)')
+        .eq('user_id', user.id);
+      const member = pickMemberRow(rows);
 
       if (member) {
         setMemberId(member.id);
@@ -110,8 +148,9 @@ export default function MemberNotificationsAndRemindersPage() {
     }
   }
 
-  function handleDownloadIcs() {
-    const icsContent = generateFesZikrRemindersIcs('2026-12-19', '2026-12-27', prefs, lang);
+  async function handleDownloadIcs() {
+    const prof = await offlineDb.profile.toCollection().first();
+    const icsContent = generateFesZikrRemindersIcs(prof?.startDate || '2026-12-19', prof?.endDate || '2026-12-27', prefs, lang);
     const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -123,6 +162,20 @@ export default function MemberNotificationsAndRemindersPage() {
 
   return (
     <div className="space-y-6 pb-6">
+      {pushState !== 'unsupported' && (
+        <section className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-4 flex items-center justify-between gap-3">
+          <div className="text-sm">
+            <div className="font-semibold">{isAr ? 'إشعارات الهاتف' : 'Notifications sur ce téléphone'}</div>
+            <div className="text-xs text-[var(--text-secondary)]">
+              {pushState === 'on' ? (isAr ? 'مفعّلة.' : 'Activées : vous recevrez les rappels du gestionnaire.')
+                : pushState === 'denied' ? (isAr ? 'محظورة في إعدادات المتصفح.' : 'Bloquées dans les réglages du navigateur.')
+                : (isAr ? 'فعّلها لتصلك تذكيرات المسؤول.' : 'Activez-les pour recevoir les rappels du gestionnaire (sur iPhone, l’app doit être installée sur l’écran d’accueil).')}
+            </div>
+          </div>
+          {pushState === 'off' && <button type="button" onClick={enablePush} className="shrink-0 h-11 px-4 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] text-sm font-semibold">{isAr ? 'تفعيل' : 'Activer'}</button>}
+        </section>
+      )}
+
       <section className="space-y-2.5">
         <h2 className="font-display text-xl font-bold text-[var(--accent-primary)]">
           {isAr ? 'مركز الإشعارات' : 'Centre de notifications'}

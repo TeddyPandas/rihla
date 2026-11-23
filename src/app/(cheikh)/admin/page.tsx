@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
+import { getManagedZiyara, pickMemberRow } from '@/lib/ziyara/current';
 import { useAppShell } from '@/components/providers/app-shell-provider';
 
 type DashboardView = 'overview' | 'by_zikr' | 'by_member' | 'by_day' | 'stay_total';
@@ -72,12 +73,7 @@ export default function CheikhRealtimeDashboard() {
 
   const fetchSnapshot = useCallback(async () => {
     const supabase = createClient();
-    const { data: zData } = await supabase
-      .from('ziyaras')
-      .select('id')
-      .eq('is_active', true)
-      .limit(1)
-      .single();
+    const zData = await getManagedZiyara<{ id: string }>(supabase, 'id');
 
     if (!zData) return;
 

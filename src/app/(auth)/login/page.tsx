@@ -67,12 +67,14 @@ export default function LoginPage() {
         return;
       }
 
-      const { data: member } = await supabase
+      const { data: memberRows } = await supabase
         .from('group_members')
         .select('role, must_change_password')
-        .eq('user_id', data.user.id)
-        .limit(1)
-        .maybeSingle();
+        .eq('user_id', data.user.id);
+      const member = memberRows && memberRows.length > 0
+        ? { role: memberRows.some((r) => r.role === 'cheikh') ? 'cheikh' : memberRows[0].role,
+            must_change_password: memberRows.some((r) => r.must_change_password) }
+        : null;
 
       if (member?.must_change_password) {
         router.replace('/onboarding');

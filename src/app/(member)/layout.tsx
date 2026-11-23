@@ -7,6 +7,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { offlineDb } from '@/lib/offline/db';
 import { flushOutboxAndPull } from '@/lib/offline/sync-engine';
 import { createClient } from '@/lib/supabase/client';
+import { getManagedZiyara, pickMemberRow } from '@/lib/ziyara/current';
 import { useAppShell } from '@/components/providers/app-shell-provider';
 
 export default function MemberLayout({ children }: { children: React.ReactNode }) {
@@ -27,12 +28,11 @@ export default function MemberLayout({ children }: { children: React.ReactNode }
       } = await supabase.auth.getUser();
       if (!user) return;
 
-      const { data: member } = await supabase
+      const { data: rows } = await supabase
         .from('group_members')
-        .select('id, ziyara_id, full_name, role, ziyaras(title_fr, title_ar, start_date, end_date)')
-        .eq('user_id', user.id)
-        .limit(1)
-        .maybeSingle();
+        .select('id, ziyara_id, full_name, role, ziyaras(title_fr, title_ar, start_date, end_date, is_active)')
+        .eq('user_id', user.id);
+      const member = pickMemberRow(rows);
 
       if (member && member.ziyaras) {
         const z = Array.isArray(member.ziyaras) ? member.ziyaras[0] : member.ziyaras;
