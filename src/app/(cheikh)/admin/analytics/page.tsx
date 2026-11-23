@@ -282,7 +282,7 @@ export default function CheikhAnalyticsPage() {
             </text>
             <rect x="230" y="352" width="12" height="12" rx="2" fill="#B8862D" />
             <text x="248" y="362" fill="#1A1D1B" fontSize="11">
-              Pot commun volontaire
+              Réserve
             </text>
           </svg>
         </div>

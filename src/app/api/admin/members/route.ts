@@ -25,7 +25,7 @@ export async function POST(request: Request) {
       .maybeSingle();
 
     if (!caller) {
-      return NextResponse.json({ error: 'Action réservée au Cheikh' }, { status: 403 });
+      return NextResponse.json({ error: 'Action réservée au gestionnaire' }, { status: 403 });
     }
 
     const body = await request.json();

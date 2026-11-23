@@ -2,7 +2,7 @@
 
 ## Vocabulaire
 - **Gestionnaire** (ex-« cheikh ») : administre l'application. Il peut nommer d'autres gestionnaires, qui ont **tous les mêmes droits**.
-- **Réserve** (nom provisoire, ex-« pot commun ») : stock de zikr non attribués à une personne, redistribuable.
+- **Réserve** (nom validé, ex-« pot commun ») : stock de zikr non attribués à une personne, redistribuable.
 - **Surplus** : ce qui ne tombe pas rond lors d'une division. Il revient **au gestionnaire** (il peut le faire ou non, puis le redonner).
 
 ## 1. Créer un zikr
@@ -43,6 +43,11 @@ Temps réel par personne, par jour, par zikr et sur tout le séjour (objectif, f
 ## Invariant
 Par zikr : somme des objectifs effectifs des personnes + Réserve = total du zikr.
 
-## Points restant à valider
-- Nom définitif de la Réserve.
-- Les membres peuvent-ils se servir eux-mêmes dans la Réserve, ou seul le gestionnaire attribue ?
+## Réserve : libre-service
+Tout membre peut puiser dans la Réserve : il fait par exemple 1 000 et déclare « je verse dans la Réserve » ; la Réserve passe de 5 000 à 4 000.
+Ces saisies sont étiquetées « Réserve » et ne comptent pas dans son objectif personnel. On ne peut pas puiser plus que ce qui reste (contrôle côté serveur).
+
+## Mise en œuvre (v2)
+- SQL : `supabase/migrations/20261121000000_repartition.sql` (`distribute_zikr`, report automatique `carry_over_day` + tâche pg_cron à 00h05 Fès, `set_member_role`, garde Réserve dans `sync_member_batch`, attribution vers un jour précis dans `redistribute_remaining`).
+- Écrans : Zikr → « Répartir un total » avec aperçu ; Membres → « Nommer gestionnaire » ; Redistribution → jour de destination.
+- Reste à faire : bouton d'annulation d'une redistribution dans l'interface ; notification de report visible dans la page Alertes.
