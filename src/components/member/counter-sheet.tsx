@@ -77,7 +77,7 @@ export function CounterSheet({ zikr, target, done, arSize, submitting, onClose, 
           <div className="min-w-0">
             <div className="text-[17px] font-semibold truncate">{isAr ? zikr.nameAr : zikr.nameFr}</div>
             <div className="text-[13px] text-[var(--text-secondary)] tabular-nums">
-              {isAr ? `الهدف ${nf(target)}` : `Objectif ${nf(target)}`}
+              {isAr ? `حصتي ${nf(target)}` : `Ma part : ${nf(target)}`}
             </div>
           </div>
         </div>

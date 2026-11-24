@@ -301,28 +301,36 @@ export default function MemberProgramPage() {
                           {zikr.arabicText}
                         </p>
                       )}
-                      <div className="text-sm text-[var(--text-secondary)] tabular-nums mt-0.5">
-                        {isAr ? `${nf(donePersonal)} من ${nf(effectiveTarget)}` : `${nf(donePersonal)} sur ${nf(effectiveTarget)}`}
+                      <div className="mt-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--accent-primary)]">
+                        {zikr.slotPlan?.length ? (isAr ? 'حصتي لهذا الوقت' : 'Ma part pour ce créneau') : zikr.scope === 'stay' ? (isAr ? 'حصتي للزيارة' : 'Ma part du séjour') : (isAr ? 'حصتي اليوم' : 'Ma part du jour')}
+                      </div>
+                      <div className="tabular-nums flex items-baseline gap-2 flex-wrap">
+                        <span className="text-[28px] leading-tight font-bold">{nf(donePersonal)}</span>
+                        <span className="text-lg font-semibold text-[var(--text-secondary)]">{isAr ? `من ${nf(effectiveTarget)}` : `sur ${nf(effectiveTarget)}`}</span>
                         {!completed && (
-                          <span>
-                            {' · '}
+                          <span className="text-sm font-semibold text-[var(--accent-gold-text)]">
                             {isAr ? `المتبقي ${nf(remaining)}` : `reste ${nf(remaining)}`}
+                          </span>
+                        )}
+                        {donePersonal > effectiveTarget && (
+                          <span className="text-sm font-semibold text-[var(--status-ok)]">
+                            {isAr ? `+${nf(donePersonal - effectiveTarget)} زيادة` : `+${nf(donePersonal - effectiveTarget)} en plus`}
                           </span>
                         )}
                       </div>
                     </div>
                     <span className={`shrink-0 px-3 py-1 rounded-full text-xs font-semibold ${badge.cls}`}>{badge.label}</span>
                   </div>
-                  <div className="h-2.5 rounded-full bg-[var(--bg-surface)] overflow-hidden">
+                  <div className="h-3 rounded-full bg-[var(--bg-surface)] overflow-hidden">
                     <div
                       className="h-full rounded-full transition-all duration-300"
                       style={{ width: `${pct}%`, backgroundColor: completed ? 'var(--status-ok)' : 'var(--accent-gold)' }}
                     />
                   </div>
                   {gs && (
-                    <div className="flex items-center justify-between text-xs text-[var(--text-secondary)] tabular-nums">
-                      <span>{isAr ? 'مجموع المجموعة' : 'Total du groupe'}</span>
-                      <span dir="ltr" className="font-semibold text-[var(--text-primary)]">
+                    <div className="flex items-center justify-between text-[11px] text-[var(--text-secondary)] tabular-nums opacity-80">
+                      <span>{zikr.scope === 'stay' ? (isAr ? 'المجموعة (كل الزيارة)' : 'Groupe (tout le séjour)') : (isAr ? 'المجموعة (الزيارة كاملة)' : 'Groupe (séjour entier)')}</span>
+                      <span dir="ltr">
                         {nf(gs.totalDonePersonal + gs.totalDonePot)} / {nf(gs.totalInitialTarget)}
                       </span>
                     </div>
@@ -333,6 +341,30 @@ export default function MemberProgramPage() {
           </section>
         ))
       )}
+
+      {(() => {
+        const groupOnly = baseCards.filter((c) => c.effectiveTarget === 0 && c.groupSummary && c.groupSummary.totalInitialTarget > 0);
+        if (groupOnly.length === 0) return null;
+        return (
+          <section className="space-y-2 pt-2">
+            <h2 className="text-sm font-semibold text-[var(--text-secondary)] px-1">
+              {isAr ? 'أذكار المجموعة بلا حصة لك اليوم' : 'Suivi du groupe (sans part pour vous ce jour)'}
+            </h2>
+            <div className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] divide-y divide-[var(--border-subtle)]">
+              {groupOnly.map((c) => {
+                const gs = c.groupSummary!;
+                const done = gs.totalDonePersonal + gs.totalDonePot;
+                return (
+                  <div key={c.key} className="p-3.5 flex items-center justify-between gap-3 text-sm tabular-nums">
+                    <span className="font-semibold min-w-0 truncate">{isAr ? c.zikr.nameAr : c.zikr.nameFr}</span>
+                    <span dir="ltr" className="text-[var(--text-secondary)]">{nf(done)} / {nf(gs.totalInitialTarget)}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        );
+      })()}
 
       {todayEntries.length > 0 && (
         <section className="space-y-2 pt-2">
