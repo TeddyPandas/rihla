@@ -133,6 +133,9 @@ export default function CheikhZikrConfigPage() {
   const totalNum = parseInt(total, 10);
   const preview = previewDistribution({ total: Number.isNaN(totalNum) ? 0 : totalNum, mode, days, day: singleDate, participants: selectedMembers.size });
   const planDaily = asgPlan.reduce((a, p) => a + p.qty, 0);
+  // Avec un plan par prière, la quantité par personne vient du plan (ex. 5 × 100 = 500 par jour).
+  const planDrivesQty = kind === 'per_person' && mode !== 'stay' && asgPlan.length > 0;
+  const qtyNum = planDrivesQty ? planDaily : totalNum;
 
   function toggleMember(id: string) {
     setSelectedMembers((prev) => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; });
@@ -140,7 +143,7 @@ export default function CheikhZikrConfigPage() {
 
   async function handleDistribute(e: React.FormEvent) {
     e.preventDefault();
-    if (!ziyara || !selectedZikrId || Number.isNaN(totalNum) || totalNum <= 0 || selectedMembers.size === 0) return;
+    if (!ziyara || !selectedZikrId || Number.isNaN(qtyNum) || qtyNum <= 0 || selectedMembers.size === 0) return;
     setDistributing(true);
     setMsg(null);
     const supabase = createClient();
@@ -155,9 +158,9 @@ export default function CheikhZikrConfigPage() {
 
     if (kind === 'per_person') {
       const { data, error } = await supabase.rpc('assign_per_person', {
-        p_ziyara_id: ziyara.id, p_zikr_id: selectedZikrId, p_quantity: totalNum, p_mode: mode,
+        p_ziyara_id: ziyara.id, p_zikr_id: selectedZikrId, p_quantity: qtyNum, p_mode: mode,
         p_day: mode === 'day' ? singleDate : null, p_member_ids: Array.from(selectedMembers),
-        p_slot_plan: asgPlan.length ? asgPlan : null, p_slot: slot,
+        p_slot_plan: asgPlan.length && mode !== 'stay' ? asgPlan : null, p_slot: slot,
       });
       setDistributing(false);
       if (error) return setMsg({ ok: false, text: error.message });
@@ -263,10 +266,19 @@ export default function CheikhZikrConfigPage() {
               <option value="per_person">{isAr ? 'نفس العدد لكل شخص' : 'Même quantité pour chaque personne'}</option>
             </select>
           </div>
-          <div>
-            <label className={lbl}>{kind === 'per_person' ? (isAr ? 'العدد لكل شخص في كل دورة' : 'Quantité par personne et par cycle') : (isAr ? 'العدد الإجمالي' : 'Total à répartir')}</label>
-            <input type="number" min={1} required inputMode="numeric" value={total} onChange={(e) => setTotal(e.target.value)} className={`${inp} text-base font-bold tabular-nums`} />
-          </div>
+          {planDrivesQty ? (
+            <div>
+              <label className={lbl}>{isAr ? 'العدد لكل شخص' : 'Quantité par personne'}</label>
+              <div className="h-12 px-3 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-base font-bold tabular-nums flex items-center">
+                {nf(planDaily)} <span className="ms-2 text-xs font-normal text-[var(--text-secondary)]">{isAr ? 'من خطة الصلوات أدناه' : 'calculée par le plan par prière ci-dessous'}</span>
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label className={lbl}>{kind === 'per_person' ? (mode === 'daily' ? (isAr ? 'العدد لكل شخص كل يوم' : 'Quantité par personne, chaque jour') : mode === 'stay' ? (isAr ? 'العدد لكل شخص للزيارة' : 'Quantité par personne, pour tout le séjour') : (isAr ? 'العدد لكل شخص في اليوم' : 'Quantité par personne, ce jour-là')) : (isAr ? 'العدد الإجمالي' : 'Total à répartir')}</label>
+              <input type="number" min={1} required inputMode="numeric" value={total} onChange={(e) => setTotal(e.target.value)} className={`${inp} text-base font-bold tabular-nums`} />
+            </div>
+          )}
           <div>
             <label className={lbl}>{isAr ? 'الدورة' : 'Cycle'}</label>
             <select value={mode} onChange={(e) => setMode(e.target.value as DistributionMode)} className={inp}>
@@ -286,12 +298,9 @@ export default function CheikhZikrConfigPage() {
               {isAr ? 'ترحيل غير المنجز' : 'Reporter le non-fait au jour suivant'}
             </label>
           )}
-          <div className="sm:col-span-2">
+          {!(kind === 'per_person' && mode === 'stay') && (<div className="sm:col-span-2">
             <SlotPlanEditor value={asgPlan} onChange={setAsgPlan} hint={isAr ? 'اختياري: توزيع العدد اليومي على الصلوات.' : 'Optionnel : découpe l’objectif du jour par prière (la même quantité partout, ou différente).'} />
-            {asgPlan.length > 0 && kind === 'per_person' && mode === 'daily' && planDaily !== totalNum && (
-              <p className="text-xs text-[var(--status-offline)] mt-1">{isAr ? 'مجموع الصلوات يختلف عن العدد اليومي؛ تُستعمل النسب.' : `Le plan fait ${nf(planDaily)} par jour, la quantité saisie est ${nf(totalNum || 0)} : les proportions du plan sont utilisées.`}</p>
-            )}
-          </div>
+          </div>)}
 
           <div className="sm:col-span-2">
             <div className="flex items-center justify-between mb-2">
@@ -315,8 +324,10 @@ export default function CheikhZikrConfigPage() {
             <div className="font-semibold">{isAr ? 'معاينة' : 'Aperçu avant validation'}</div>
             {kind === 'per_person' ? (
               <>
-                <div>{isAr ? 'كل مشارك:' : 'Chaque participant :'} <b>{nf(totalNum || 0)}</b> {mode === 'daily' ? (isAr ? 'يوميًا' : 'par jour') : mode === 'day' ? (isAr ? 'في ذلك اليوم' : 'ce jour-là') : (isAr ? 'للزيارة' : 'sur le séjour')}</div>
-                <div>{isAr ? 'المجموع:' : 'Total du groupe :'} <b>{nf((totalNum || 0) * selectedMembers.size * (mode === 'daily' ? days.length : 1))}</b></div>
+                <div>{isAr ? 'كل مشارك:' : 'Chaque participant :'} <b>{nf(qtyNum || 0)}</b> {mode === 'daily' ? (isAr ? 'يوميًا' : 'par jour') : mode === 'day' ? (isAr ? 'في ذلك اليوم' : 'ce jour-là') : (isAr ? 'للزيارة' : 'sur tout le séjour')}
+                  {planDrivesQty && <span className="text-[var(--text-secondary)]"> ({asgPlan.map((p) => nf(p.qty)).join(' + ')})</span>}</div>
+                <div>{isAr ? 'المجموع:' : 'Total du groupe :'} <b>{nf((qtyNum || 0) * selectedMembers.size * (mode === 'daily' ? days.length : 1))}</b>
+                  <span className="text-[var(--text-secondary)]"> = {nf(qtyNum || 0)} × {selectedMembers.size} {isAr ? 'أشخاص' : 'personne(s)'}{mode === 'daily' ? ` × ${days.length} ${isAr ? 'يوم' : 'jours'}` : ''}</span></div>
               </>
             ) : preview.rows.length > 0 ? (
               <>
@@ -327,7 +338,7 @@ export default function CheikhZikrConfigPage() {
           </div>
 
           <div className="sm:col-span-2">
-            <button type="submit" disabled={distributing || selectedMembers.size === 0 || !(totalNum > 0)} className="h-12 px-6 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-semibold text-sm disabled:opacity-50">
+            <button type="submit" disabled={distributing || selectedMembers.size === 0 || !(qtyNum > 0)} className="h-12 px-6 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-semibold text-sm disabled:opacity-50">
               {distributing ? '…' : isAr ? 'تأكيد' : 'Valider l’attribution'}
             </button>
           </div>

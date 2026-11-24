@@ -130,6 +130,17 @@ export default function VoyagePage() {
     await load();
   }
 
+  async function resetData() {
+    if (!orig) return;
+    const word = window.prompt(isAr ? 'اكتب «مسح» للتأكيد' : 'Tapez EFFACER pour confirmer la suppression des données de ce voyage :');
+    if (!word || !['effacer', 'مسح'].includes(word.trim().toLowerCase())) return;
+    setBusy(true);
+    const { data, error } = await createClient().rpc('reset_ziyara_data', { p_ziyara_id: orig.id });
+    setBusy(false);
+    const r = data as { entries?: number; goals?: number } | null;
+    setFb(error ? { type: 'err', msg: error.message } : { type: 'ok', msg: isAr ? 'تم المسح.' : `Données effacées (${r?.entries ?? 0} saisies, ${r?.goals ?? 0} objectifs). Les téléphones se mettent à jour à leur prochaine synchronisation.` });
+  }
+
   async function createVoyage(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -237,8 +248,8 @@ export default function VoyagePage() {
               <br />
               <span className="text-[var(--text-secondary)]">
                 {isAr
-                  ? 'يتطلب بقاء المدة نفسها. بدون الإزاحة، يُرفض التغيير إذا كانت هناك أهداف خارج الفترة الجديدة.'
-                  : 'Demande que la durée reste identique. Sans décalage, le changement est refusé si des objectifs sortent de la nouvelle période.'}
+                  ? 'تتبع الأهداف والتسجيلات تاريخ البداية. يمكن تغيير المدة، لكن لا يجوز أن يخرج أي هدف عن الفترة الجديدة.'
+                  : 'Les objectifs et saisies suivent la date de début. La durée peut changer, mais rien ne doit sortir de la nouvelle période. Pour revenir aux vraies dates plus tard, refaites la même opération.'}
               </span>
             </span>
           </label>
@@ -273,6 +284,18 @@ export default function VoyagePage() {
           </button>
         </div>
       </form>
+
+      <section className="rounded-2xl border border-[var(--status-late)]/40 bg-[var(--bg-elevated)] p-5 space-y-3">
+        <h3 className="text-lg font-semibold">{isAr ? 'مسح بيانات الاختبار' : 'Effacer les données de test'}</h3>
+        <p className="text-sm text-[var(--text-secondary)]">
+          {isAr
+            ? 'يحذف كل التسجيلات والأهداف وإعادة التوزيع والاحتياطي والإشعارات لهذه الرحلة. تبقى الأذكار والأعضاء.'
+            : 'Supprime toutes les saisies, objectifs, redistributions, la Réserve et les notifications de ce voyage. Les zikr et les membres sont conservés. À faire après vos essais, avant le vrai départ.'}
+        </p>
+        <button type="button" onClick={resetData} disabled={busy} className="h-12 px-6 rounded-xl border-[1.5px] border-[var(--status-late)] text-[var(--status-late)] font-semibold disabled:opacity-50">
+          {isAr ? 'مسح بيانات هذه الرحلة' : 'Effacer les données de ce voyage'}
+        </button>
+      </section>
 
       <form onSubmit={createVoyage} className="rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
         <h3 className="sm:col-span-2 text-lg font-semibold">{isAr ? 'رحلة جديدة' : 'Nouveau voyage'}</h3>
