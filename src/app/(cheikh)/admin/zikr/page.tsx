@@ -135,6 +135,7 @@ export default function CheikhZikrConfigPage() {
   const planDaily = asgPlan.reduce((a, p) => a + p.qty, 0);
   // Avec un plan par prière, la quantité par personne vient du plan (ex. 5 × 100 = 500 par jour).
   const planDrivesQty = kind === 'per_person' && mode !== 'stay' && asgPlan.length > 0;
+  const editingScope = editId ? zikrs.find((z) => z.id === editId)?.scope ?? scope : scope;
   const qtyNum = planDrivesQty ? planDaily : totalNum;
 
   function toggleMember(id: string) {
@@ -152,7 +153,7 @@ export default function CheikhZikrConfigPage() {
       p_name_fr: zikrs.find((z) => z.id === selectedZikrId)!.name_fr,
       p_name_ar: zikrs.find((z) => z.id === selectedZikrId)!.name_ar,
       p_arabic_text: zikrs.find((z) => z.id === selectedZikrId)!.arabic_text,
-      p_default_slot: slot, p_slot_plan: asgPlan.length ? asgPlan : null, p_carry_over: kind === 'per_person' ? false : asgCarry,
+      p_default_slot: slot, p_slot_plan: asgPlan.length && mode !== 'stay' ? asgPlan : null, p_carry_over: kind === 'per_person' ? false : asgCarry,
     });
     if (up.error) { setDistributing(false); return setMsg({ ok: false, text: up.error.message }); }
 
@@ -240,9 +241,9 @@ export default function CheikhZikrConfigPage() {
             <input type="checkbox" className="h-5 w-5 accent-[var(--accent-primary)]" checked={defCarry} onChange={(e) => setDefCarry(e.target.checked)} />
             {isAr ? 'ترحيل غير المنجز إلى اليوم التالي' : 'Reporter automatiquement le non-fait au jour suivant'}
           </label>
-          <div className="sm:col-span-2">
+          {editingScope === 'daily' && (<div className="sm:col-span-2">
             <SlotPlanEditor value={defPlan} onChange={setDefPlan} hint={isAr ? 'اختياري: كمية بعد كل صلاة.' : 'Optionnel : « X fois après chaque prière ». Laisser vide pour un compteur libre.'} />
-          </div>
+          </div>)}
           <div className="sm:col-span-2 flex gap-3">
             <button type="submit" className="h-12 px-6 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-semibold text-sm">{editId ? (isAr ? 'حفظ' : 'Enregistrer') : (isAr ? '+ إضافة' : '+ Ajouter ce zikr')}</button>
             {editId && <button type="button" onClick={resetForm} className="h-12 px-6 rounded-xl border-[1.5px] border-[var(--border-subtle)] text-sm font-semibold">{isAr ? 'إلغاء' : 'Annuler'}</button>}
@@ -298,8 +299,8 @@ export default function CheikhZikrConfigPage() {
               {isAr ? 'ترحيل غير المنجز' : 'Reporter le non-fait au jour suivant'}
             </label>
           )}
-          {!(kind === 'per_person' && mode === 'stay') && (<div className="sm:col-span-2">
-            <SlotPlanEditor value={asgPlan} onChange={setAsgPlan} hint={isAr ? 'اختياري: توزيع العدد اليومي على الصلوات.' : 'Optionnel : découpe l’objectif du jour par prière (la même quantité partout, ou différente).'} />
+          {mode !== 'stay' && (<div className="sm:col-span-2">
+            <SlotPlanEditor value={asgPlan} onChange={setAsgPlan} hint={kind === 'split' ? (isAr ? 'في التقسيم، الأرقام نسب: 100/100/100 تعني ثلاثة أجزاء متساوية من حصة اليوم.' : 'Dans une répartition, les chiffres sont des proportions : 100 / 100 / 100 = trois parts égales de la part du jour (pas 100 récitations).') : (isAr ? 'العدد بعد كل صلاة لكل شخص.' : 'Nombre exact à faire après chaque prière, par personne.')} />
           </div>)}
 
           <div className="sm:col-span-2">
