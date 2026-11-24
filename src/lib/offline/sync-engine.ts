@@ -138,7 +138,7 @@ export async function flushOutboxAndPull(ziyaraId: string): Promise<boolean> {
 
     await offlineDb.transaction(
       'rw',
-      [offlineDb.zikrDefs, offlineDb.goals, offlineDb.entries, offlineDb.groupSummary],
+      [offlineDb.zikrDefs, offlineDb.goals, offlineDb.entries, offlineDb.groupSummary, offlineDb.outbox],
       async () => {
         if (defsRes.data) {
           await offlineDb.zikrDefs.clear();

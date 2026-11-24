@@ -44,7 +44,7 @@ export default function CheikhZikrConfigPage() {
   const [mode, setMode] = useState<DistributionMode>('daily');
   const [singleDate, setSingleDate] = useState('');
   const [slot, setSlot] = useState<TimeSlot>('morning');
-  const [total, setTotal] = useState('124000');
+  const [total, setTotal] = useState('');
   const [asgPlan, setAsgPlan] = useState<SlotPlan>([]);
   const [asgCarry, setAsgCarry] = useState(true);
   const [selectedMembers, setSelectedMembers] = useState<Set<string>>(new Set());
@@ -63,11 +63,9 @@ export default function CheikhZikrConfigPage() {
     ]);
     if (defsRes.data) {
       setZikrs(defsRes.data as ZikrDefRow[]);
-      setSelectedZikrId((p) => p || defsRes.data[0]?.id || '');
     }
     if (memRes.data) {
       setMembers(memRes.data);
-      setSelectedMembers((prev) => (prev.size === 0 ? new Set(memRes.data.map((m) => m.id)) : prev));
     }
   }, []);
 
@@ -142,6 +140,17 @@ export default function CheikhZikrConfigPage() {
     setSelectedMembers((prev) => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   }
 
+  function resetAssignForm() {
+    setSelectedZikrId('');
+    setSelectedMembers(new Set());
+    setTotal('');
+    setAsgPlan([]);
+    setKind('split');
+    setMode('daily');
+    setAsgCarry(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   async function handleDistribute(e: React.FormEvent) {
     e.preventDefault();
     if (!ziyara || !selectedZikrId || Number.isNaN(qtyNum) || qtyNum <= 0 || selectedMembers.size === 0) return;
@@ -167,8 +176,9 @@ export default function CheikhZikrConfigPage() {
       if (error) return setMsg({ ok: false, text: error.message });
       const r = data as { participants: number; per_person_per_cycle: number; cycles: number } | null;
       setMsg({ ok: true, text: isAr
-        ? `كل مشارك (${r?.participants}) يؤدي ${r?.per_person_per_cycle} في كل دورة (${r?.cycles}).`
-        : `Chacun des ${r?.participants} participant(s) fait ${nf(r?.per_person_per_cycle ?? 0)} par cycle (${r?.cycles} cycle(s)).` });
+        ? `✔ تم التعيين. كل مشارك (${r?.participants}) يؤدي ${r?.per_person_per_cycle} في كل دورة (${r?.cycles}).`
+        : `✔ Attribution enregistrée : chacun des ${r?.participants} participant(s) fait ${nf(r?.per_person_per_cycle ?? 0)} par cycle (${r?.cycles} cycle(s)). Le formulaire est remis à zéro.` });
+      resetAssignForm();
     } else {
       const { data, error } = await supabase.rpc('distribute_zikr', {
         p_ziyara_id: ziyara.id, p_zikr_id: selectedZikrId, p_total: totalNum, p_mode: mode,
@@ -178,8 +188,9 @@ export default function CheikhZikrConfigPage() {
       if (error) return setMsg({ ok: false, text: error.message });
       const r = data as { participants: number; surplus_to_manager: number } | null;
       setMsg({ ok: true, text: isAr
-        ? `تم التوزيع على ${r?.participants ?? selectedMembers.size}. الباقي: ${r?.surplus_to_manager ?? 0}.`
-        : `Réparti entre ${r?.participants ?? selectedMembers.size} participant(s). Surplus gardé par vous : ${nf(r?.surplus_to_manager ?? 0)}.` });
+        ? `✔ تم التوزيع على ${r?.participants ?? selectedMembers.size}. الباقي: ${r?.surplus_to_manager ?? 0}.`
+        : `✔ Répartition enregistrée entre ${r?.participants ?? selectedMembers.size} participant(s). Surplus gardé par vous : ${nf(r?.surplus_to_manager ?? 0)}. Le formulaire est remis à zéro.` });
+      resetAssignForm();
     }
     await loadData();
   }
@@ -257,6 +268,7 @@ export default function CheikhZikrConfigPage() {
           <div>
             <label className={lbl}>{isAr ? 'الذكر' : 'Zikr concerné'}</label>
             <select value={selectedZikrId} onChange={(e) => setSelectedZikrId(e.target.value)} className={inp}>
+              <option value="">{isAr ? '— اختر ذكرًا —' : '— Choisir un zikr —'}</option>
               {zikrs.map((z) => <option key={z.id} value={z.id}>{isAr ? z.name_ar : z.name_fr}</option>)}
             </select>
           </div>
@@ -339,7 +351,7 @@ export default function CheikhZikrConfigPage() {
           </div>
 
           <div className="sm:col-span-2">
-            <button type="submit" disabled={distributing || selectedMembers.size === 0 || !(qtyNum > 0)} className="h-12 px-6 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-semibold text-sm disabled:opacity-50">
+            <button type="submit" disabled={distributing || !selectedZikrId || selectedMembers.size === 0 || !(qtyNum > 0)} className="h-12 px-6 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-semibold text-sm disabled:opacity-50">
               {distributing ? '…' : isAr ? 'تأكيد' : 'Valider l’attribution'}
             </button>
           </div>

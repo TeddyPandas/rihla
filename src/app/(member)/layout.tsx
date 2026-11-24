@@ -47,8 +47,13 @@ export default function MemberLayout({ children }: { children: React.ReactNode }
           role: member.role,
         });
         setSyncing(true);
-        await flushOutboxAndPull(member.ziyara_id);
-        setSyncing(false);
+        try {
+          await flushOutboxAndPull(member.ziyara_id);
+        } catch (err) {
+          console.error('[sync] échec', err);
+        } finally {
+          setSyncing(false);
+        }
       }
     }
     void bootstrapProfile();
@@ -59,8 +64,13 @@ export default function MemberLayout({ children }: { children: React.ReactNode }
     const triggerSync = async () => {
       if (!navigator.onLine) return;
       setSyncing(true);
-      await flushOutboxAndPull(profile.ziyaraId);
-      setSyncing(false);
+      try {
+        await flushOutboxAndPull(profile.ziyaraId);
+      } catch (err) {
+        console.error('[sync] échec', err);
+      } finally {
+        setSyncing(false);
+      }
     };
 
     if (isOnline) void triggerSync();
