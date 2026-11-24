@@ -25,11 +25,14 @@ export function CounterSheet({ zikr, target, done, arSize, submitting, onClose, 
 
   const [stack, setStack] = useState<number[]>([]);
   const [custom, setCustom] = useState('');
+  const [confirmOver, setConfirmOver] = useState(false);
 
   const draft = stack.reduce((a, b) => a + b, 0);
   const total = done + draft;
   const remaining = Math.max(0, target - done);
   const pct = target > 0 ? Math.min(1, total / target) : 0;
+  // Surplus : ce que l'ajout en cours dépasse de l'objectif restant (seulement si un objectif existe).
+  const over = target > 0 ? Math.max(0, draft - remaining) : 0;
   const scale = 0.8 + (arSize / 100) * 0.5;
 
   useEffect(() => {
@@ -45,6 +48,7 @@ export function CounterSheet({ zikr, target, done, arSize, submitting, onClose, 
 
   const push = (n: number) => {
     if (n <= 0) return;
+    setConfirmOver(false);
     setStack((s) => [...s, n]);
     if (n === 1 && typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(8);
   };
@@ -131,7 +135,7 @@ export function CounterSheet({ zikr, target, done, arSize, submitting, onClose, 
         <div className="flex gap-2" dir="ltr">
           <button
             type="button"
-            onClick={() => setStack((s) => s.slice(0, -1))}
+            onClick={() => { setConfirmOver(false); setStack((s) => s.slice(0, -1)); }}
             disabled={stack.length === 0}
             aria-label={isAr ? 'إلغاء آخر إضافة' : 'Annuler le dernier ajout'}
             className="h-14 w-14 shrink-0 rounded-xl border-[1.5px] border-[var(--border-subtle)] flex items-center justify-center disabled:opacity-40"
@@ -184,14 +188,37 @@ export function CounterSheet({ zikr, target, done, arSize, submitting, onClose, 
           </button>
         </form>
 
+        {over > 0 && (
+          <div role="alert" className="rounded-xl border-[1.5px] border-[var(--accent-gold)] bg-[var(--accent-gold-soft)] p-3.5 text-sm text-[var(--accent-gold-text)] space-y-2">
+            <p className="tabular-nums">
+              {isAr
+                ? `هذا الإدخال يتجاوز الهدف بـ ${nf(over)} (المتبقي ${nf(remaining)}).`
+                : `Cet ajout dépasse votre objectif de ${nf(over)} (il vous restait ${nf(remaining)}).`}
+            </p>
+            <p className="text-xs">
+              {isAr
+                ? 'الزيادة تُسجَّل وتظهر للمسؤول الذي يقرر ما يفعله بها.'
+                : 'Le surplus est enregistré et visible par le gestionnaire, qui décidera quoi en faire.'}
+            </p>
+            <button type="button" onClick={() => setStack((s) => { const out = [...s]; let cut = over; while (cut > 0 && out.length) { const last = out.pop()!; if (last > cut) { out.push(last - cut); cut = 0; } else cut -= last; } return out; })}
+              className="h-11 w-full rounded-lg border-[1.5px] border-[var(--accent-gold)] font-semibold">
+              {isAr ? `تقليص إلى المتبقي (${nf(remaining)})` : `Ramener à ce qui reste (${nf(remaining)})`}
+            </button>
+          </div>
+        )}
+
         <button
           type="button"
-          onClick={() => onSave(draft)}
+          onClick={() => { if (over > 0 && !confirmOver) { setConfirmOver(true); return; } onSave(draft); }}
           disabled={draft <= 0 || submitting}
           className="w-full h-14 rounded-[14px] bg-[var(--accent-primary)] text-[var(--text-on-accent)] font-semibold text-[17px] disabled:opacity-45"
         >
           {draft > 0
-            ? isAr
+            ? over > 0 && confirmOver
+              ? isAr
+                ? `تأكيد حفظ ${nf(draft)}+ (مع الزيادة)`
+                : `Confirmer +${nf(draft)} (avec surplus)`
+              : isAr
               ? `حفظ ${nf(draft)}+`
               : `Enregistrer +${nf(draft)}`
             : isAr

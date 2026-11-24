@@ -12,7 +12,13 @@ interface ZikrDefRow {
   id: string; ziyara_id: string; name_fr: string; name_ar: string; arabic_text: string | null;
   scope: 'daily' | 'stay'; default_slot: TimeSlot; sort_order: number;
   distribution_mode: 'split' | 'per_person' | null; slot_plan: SlotPlan | null; carry_over: boolean | null;
+  total_target: number | null;
 }
+interface AssignmentRow {
+  id: string; zikr_id: string; kind: 'split' | 'per_person'; mode: 'daily' | 'stay' | 'day'; target_date: string | null;
+  total: number; per_person: number | null; participants: number; cycles: number; surplus: number; member_ids: string[]; created_at: string;
+}
+interface SurplusRow { zikr_id: string; member_id: string; full_name: string | null; target: number; done: number; surplus: number }
 interface MemberOption { id: string; full_name: string | null; phone_e164: string }
 
 const sec = 'rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-5';
@@ -27,6 +33,10 @@ export default function CheikhZikrConfigPage() {
   const [ziyara, setZiyara] = useState<{ id: string; start_date: string; end_date: string } | null>(null);
   const [zikrs, setZikrs] = useState<ZikrDefRow[]>([]);
   const [members, setMembers] = useState<MemberOption[]>([]);
+  const [surplus, setSurplus] = useState<SurplusRow[]>([]);
+  const [openSurplus, setOpenSurplus] = useState<string | null>(null);
+  const [assignments, setAssignments] = useState<AssignmentRow[]>([]);
+  const [showAssignMembers, setShowAssignMembers] = useState<string | null>(null);
 
   // Formulaire de définition (création / modification)
   const [editId, setEditId] = useState<string | null>(null);
@@ -57,10 +67,14 @@ export default function CheikhZikrConfigPage() {
     if (!zData) return;
     setZiyara(zData);
     setSingleDate((p) => p || zData.start_date);
-    const [defsRes, memRes] = await Promise.all([
+    const [defsRes, memRes, asgRes] = await Promise.all([
       supabase.from('zikr_definitions').select('*').eq('ziyara_id', zData.id).order('sort_order'),
       supabase.from('group_members').select('id, full_name, phone_e164').eq('ziyara_id', zData.id).order('created_at'),
+      supabase.from('goal_assignments').select('*').eq('ziyara_id', zData.id).order('created_at', { ascending: false }),
     ]);
+    if (asgRes.data) setAssignments(asgRes.data as AssignmentRow[]);
+    const sp = await supabase.rpc('zikr_surplus', { p_ziyara_id: zData.id });
+    setSurplus(((sp.data ?? []) as SurplusRow[]).map((r) => ({ ...r, target: Number(r.target), done: Number(r.done), surplus: Number(r.surplus) })));
     if (defsRes.data) {
       setZikrs(defsRes.data as ZikrDefRow[]);
     }
@@ -154,6 +168,13 @@ export default function CheikhZikrConfigPage() {
   async function handleDistribute(e: React.FormEvent) {
     e.preventDefault();
     if (!ziyara || !selectedZikrId || Number.isNaN(qtyNum) || qtyNum <= 0 || selectedMembers.size === 0) return;
+    const chosen = zikrs.find((z) => z.id === selectedZikrId);
+    if ((chosen?.total_target ?? 0) > 0) {
+      const okAdd = window.confirm(isAr
+        ? `«${chosen!.name_ar}» لديه بالفعل ${nf(chosen!.total_target ?? 0)} موزَّع. هذا التعيين سيُضاف إليه. المتابعة؟`
+        : `« ${chosen!.name_fr} » a déjà ${nf(chosen!.total_target ?? 0)} attribués. Cette attribution S'AJOUTE à l'existant (elle ne le remplace pas). Continuer ?`);
+      if (!okAdd) return;
+    }
     setDistributing(true);
     setMsg(null);
     const supabase = createClient();
@@ -219,6 +240,29 @@ export default function CheikhZikrConfigPage() {
                   {z.slot_plan?.length ? ` · ${isAr ? 'بعد' : 'après'} ${z.slot_plan.length} ${isAr ? 'أوقات' : 'créneaux'}` : ''}
                   {z.carry_over === false ? (isAr ? ' · بدون ترحيل' : ' · sans report') : ''}
                 </div>
+                <div className="text-xs mt-0.5 tabular-nums">
+                  {(z.total_target ?? 0) > 0
+                    ? <span className="font-semibold text-[var(--accent-primary)]">{isAr ? `موزَّع: ${nf(z.total_target ?? 0)}` : `Attribué : ${nf(z.total_target ?? 0)}`} · {assignments.filter((a) => a.zikr_id === z.id).length} {isAr ? 'تعيين' : 'attribution(s)'}</span>
+                    : <span className="text-[var(--text-secondary)]">{isAr ? 'لم يُعيَّن بعد' : 'Pas encore attribué'}</span>}
+                </div>
+                {(() => {
+                  const rows = surplus.filter((r) => r.zikr_id === z.id);
+                  if (rows.length === 0) return null;
+                  const sum = rows.reduce((a, r) => a + r.surplus, 0);
+                  return (
+                    <div className="mt-1 text-xs tabular-nums">
+                      <button type="button" onClick={() => setOpenSurplus(openSurplus === z.id ? null : z.id)} className="font-semibold text-[var(--accent-gold-text)]">
+                        {isAr ? `فائض: +${nf(sum)} (${rows.length} شخص)` : `Surplus : +${nf(sum)} (${rows.length} personne(s)) ${openSurplus === z.id ? '▲' : '▼'}`}
+                      </button>
+                      {openSurplus === z.id && (
+                        <ul className="mt-1 space-y-0.5 text-[var(--text-secondary)]">
+                          {rows.map((r) => <li key={r.member_id}>{r.full_name ?? '?'} : {nf(r.done)} / {nf(r.target)} (+{nf(r.surplus)})</li>)}
+                          <li className="italic">{isAr ? 'يمكنك خفض الإجمالي أو إعادة توزيعه من شاشة إعادة التوزيع.' : 'À vous de décider : réduire le total ou le réutiliser via l’écran Redistribution.'}</li>
+                        </ul>
+                      )}
+                    </div>
+                  );
+                })()}
               </div>
               <div className="flex gap-2">
                 <button type="button" onClick={() => startEdit(z)} className="h-10 px-4 rounded-xl border-[1.5px] border-[var(--border-subtle)] text-sm font-semibold">{isAr ? 'تعديل' : 'Modifier'}</button>
@@ -272,6 +316,19 @@ export default function CheikhZikrConfigPage() {
               {zikrs.map((z) => <option key={z.id} value={z.id}>{isAr ? z.name_ar : z.name_fr}</option>)}
             </select>
           </div>
+          {(() => {
+            const z = zikrs.find((x) => x.id === selectedZikrId);
+            if (!z || (z.total_target ?? 0) <= 0) return null;
+            const mine = assignments.filter((a) => a.zikr_id === z.id);
+            return (
+              <div role="alert" className="sm:col-span-2 rounded-xl border-[1.5px] border-[var(--status-late)] bg-[var(--status-late-soft)] p-3.5 text-sm">
+                <b>{isAr ? 'تنبيه: ' : 'Attention : '}</b>
+                {isAr
+                  ? `هذا الذكر لديه بالفعل ${nf(z.total_target ?? 0)} موزَّع (${mine.length} تعيين). التعيين الجديد يُضاف ولا يستبدل. للبدء من جديد استعمل «تصفير».`
+                  : `ce zikr a déjà ${nf(z.total_target ?? 0)} attribués (${mine.length} attribution(s)). Une nouvelle attribution S'AJOUTE, elle ne remplace pas. Pour repartir de zéro, utilisez « Remettre à zéro » dans la liste ci-dessus.`}
+              </div>
+            );
+          })()}
           <div>
             <label className={lbl}>{isAr ? 'نوع التوزيع' : 'Type d’attribution'}</label>
             <select value={kind} onChange={(e) => setKind(e.target.value as 'split' | 'per_person')} className={inp}>
@@ -356,6 +413,42 @@ export default function CheikhZikrConfigPage() {
             </button>
           </div>
         </form>
+      </section>
+
+      <section className={sec}>
+        <h2 className="text-xl font-bold text-[var(--accent-primary)] mb-1">{isAr ? 'التعيينات المنجزة' : 'Attributions effectuées'}</h2>
+        <p className="text-xs text-[var(--text-secondary)] mb-3">{isAr ? 'كل تعيين يُضاف إلى السابق. الأحدث أولًا.' : 'Chaque attribution s’ajoute aux précédentes. Les plus récentes en premier.'}</p>
+        {assignments.length === 0 ? (
+          <p className="text-sm text-[var(--text-secondary)]">{isAr ? 'لا تعيينات بعد.' : 'Aucune attribution pour le moment.'}</p>
+        ) : (
+          <ul className="divide-y divide-[var(--border-subtle)]">
+            {assignments.map((a) => {
+              const z = zikrs.find((x) => x.id === a.zikr_id);
+              const names = a.member_ids.map((id) => { const m = members.find((x) => x.id === id); return m?.full_name || m?.phone_e164 || '?'; });
+              const when = new Date(a.created_at).toLocaleString(isAr ? 'ar-u-nu-latn' : 'fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+              const cycle = a.mode === 'daily' ? (isAr ? `${a.cycles} يومًا` : `${a.cycles} jours`) : a.mode === 'day' ? (a.target_date ?? '') : (isAr ? 'الزيارة كلها' : 'tout le séjour');
+              return (
+                <li key={a.id} className="py-3 text-sm space-y-0.5">
+                  <div className="flex flex-wrap items-baseline justify-between gap-2">
+                    <span className="font-semibold">{isAr ? z?.name_ar : z?.name_fr}</span>
+                    <span className="text-xs text-[var(--text-secondary)] tabular-nums">{when}</span>
+                  </div>
+                  <div className="tabular-nums">
+                    {a.kind === 'split'
+                      ? (isAr ? `إجمالي ${nf(a.total)} مقسَّم بين ${a.participants} · ` : `Total ${nf(a.total)} réparti entre ${a.participants} personne(s) · `)
+                      : (isAr ? `${nf(a.per_person ?? 0)} لكل شخص (${a.participants}) · المجموع ${nf(a.total)} · ` : `${nf(a.per_person ?? 0)} par personne (${a.participants}) · total ${nf(a.total)} · `)}
+                    {cycle}
+                    {a.kind === 'split' && a.surplus > 0 ? (isAr ? ` · الباقي لك ${nf(a.surplus)}` : ` · surplus pour vous ${nf(a.surplus)}`) : ''}
+                  </div>
+                  <button type="button" onClick={() => setShowAssignMembers(showAssignMembers === a.id ? null : a.id)} className="text-xs font-semibold text-[var(--accent-primary)]">
+                    {showAssignMembers === a.id ? (isAr ? 'إخفاء الأسماء' : 'Masquer les noms') : (isAr ? 'عرض الأسماء' : 'Voir les participants')}
+                  </button>
+                  {showAssignMembers === a.id && <div className="text-xs text-[var(--text-secondary)]">{names.join(', ')}</div>}
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
     </div>
   );
