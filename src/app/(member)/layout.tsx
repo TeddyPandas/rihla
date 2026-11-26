@@ -84,6 +84,7 @@ export default function MemberLayout({ children }: { children: React.ReactNode }
   const navItems = [
     { href: '/', label: t.navProgram, icon: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>' },
     { href: '/pot', label: t.navPot, icon: '<path d="M4 9h16l-1.5 10.5a1.5 1.5 0 0 1-1.5 1.3H7a1.5 1.5 0 0 1-1.5-1.3L4 9z"/><path d="M8 9V7a4 4 0 0 1 8 0v2"/>' },
+    { href: '/informations', label: lang === 'ar' ? 'معلومات' : 'Infos', icon: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6"/><circle cx="12" cy="7.5" r="0.6" fill="currentColor"/>' },
     { href: '/historique', label: t.navHistory, icon: '<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/>' },
     { href: '/notifications', label: t.navNotifs, icon: '<path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15L6 17z"/><path d="M10 21a2 2 0 0 0 4 0"/>' },
     { href: '/profil', label: t.navProfile, icon: '<circle cx="12" cy="8.5" r="4"/><path d="M4 21c1-4 4.2-6 8-6s7 2 8 6"/>' },
