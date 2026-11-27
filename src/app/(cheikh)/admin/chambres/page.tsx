@@ -27,6 +27,10 @@ export default function AdminRoomsPage() {
   const [count, setCount] = useState('1');
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [editRoom, setEditRoom] = useState<string | null>(null);
+  const [eLabel, setELabel] = useState('');
+  const [eCap, setECap] = useState('2');
+  const [eNotes, setENotes] = useState('');
 
   const load = useCallback(async () => {
     const supabase = createClient();
@@ -91,6 +95,27 @@ export default function AdminRoomsPage() {
   async function unassign(id: string) {
     const { error } = await createClient().from('room_members').delete().eq('id', id);
     if (error) return fail(error.message);
+    await load();
+  }
+  function startEditRoom(r: Room) { setEditRoom(r.id); setELabel(r.room_label); setECap(String(r.capacity)); setENotes(r.notes ?? ''); }
+  async function saveRoom(r: Room) {
+    const cap = Math.max(1, parseInt(eCap, 10) || r.capacity);
+    if (!eLabel.trim()) return;
+    const { error } = await createClient().from('rooms').update({ room_label: eLabel.trim(), capacity: cap, notes: eNotes.trim() || null }).eq('id', r.id);
+    if (error) return fail(error.message);
+    setEditRoom(null);
+    setMsg({ ok: true, text: isAr ? '✔ تم التعديل.' : '✔ Chambre modifiée. Le membre voit le changement à sa prochaine ouverture.' });
+    await load();
+  }
+  async function renameHotel() {
+    if (!ziyaraId || !hotel) return;
+    const nh = window.prompt(isAr ? 'الاسم الجديد للفندق' : 'Nouveau nom de l’hôtel', hotel)?.trim();
+    if (!nh || nh === hotel) return;
+    const supabase = createClient();
+    const a = await supabase.from('rooms').update({ hotel: nh }).eq('ziyara_id', ziyaraId).eq('hotel', hotel);
+    const b = await supabase.from('room_members').update({ hotel: nh }).eq('ziyara_id', ziyaraId).eq('hotel', hotel);
+    if (a.error || b.error) return fail((a.error ?? b.error)!.message);
+    setHotel(nh);
     await load();
   }
   async function removeRoom(r: Room) {
@@ -170,6 +195,7 @@ export default function AdminRoomsPage() {
             </div>
             <div className="flex gap-2">
               <button type="button" onClick={autoFill} disabled={busy || unassigned.length === 0} className="h-11 px-4 rounded-xl border-[1.5px] border-[var(--border-subtle)] text-sm font-semibold disabled:opacity-40">{isAr ? 'توزيع تلقائي' : 'Répartir automatiquement'}</button>
+              <button type="button" onClick={renameHotel} className="h-11 px-4 rounded-xl border-[1.5px] border-[var(--border-subtle)] text-sm font-semibold">{isAr ? 'إعادة تسمية' : 'Renommer'}</button>
               <button type="button" onClick={removeHotel} className="h-11 px-4 rounded-xl border-[1.5px] border-[var(--status-late)] text-[var(--status-late)] text-sm font-semibold">{isAr ? 'حذف الفندق' : 'Supprimer l’hôtel'}</button>
             </div>
           </div>
@@ -189,10 +215,24 @@ export default function AdminRoomsPage() {
               const full = occ.length >= r.capacity;
               return (
                 <div key={r.id} className="rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-canvas)] p-3.5 space-y-2.5">
+                  {editRoom === r.id ? (
+                    <div className="space-y-2">
+                      <div className="grid grid-cols-2 gap-2">
+                        <div><label className={lbl}>{isAr ? 'الرقم' : 'Numéro / nom'}</label><input value={eLabel} onChange={(e) => setELabel(e.target.value)} className={inp} /></div>
+                        <div><label className={lbl}>{isAr ? 'الأماكن' : 'Places'}</label><input type="number" min={1} inputMode="numeric" value={eCap} onChange={(e) => setECap(e.target.value)} className={inp} /></div>
+                      </div>
+                      <div><label className={lbl}>{isAr ? 'ملاحظة (تظهر للمقيم)' : 'Note affichée au membre (ex. 2e étage)'}</label><input value={eNotes} onChange={(e) => setENotes(e.target.value)} className={inp} /></div>
+                      <div className="flex gap-2">
+                        <button type="button" onClick={() => saveRoom(r)} className="h-11 px-4 rounded-xl bg-[var(--accent-primary)] text-[var(--text-on-accent)] text-sm font-semibold">{isAr ? 'حفظ' : 'Enregistrer'}</button>
+                        <button type="button" onClick={() => setEditRoom(null)} className="h-11 px-4 rounded-xl border-[1.5px] border-[var(--border-subtle)] text-sm font-semibold">{isAr ? 'إلغاء' : 'Annuler'}</button>
+                      </div>
+                    </div>
+                  ) : (
                   <div className="flex items-center justify-between gap-2">
-                    <div className="font-bold text-lg tabular-nums">{isAr ? 'غرفة' : 'Chambre'} {r.room_label}</div>
+                    <div className="font-bold text-lg tabular-nums">{isAr ? 'غرفة' : 'Chambre'} {r.room_label}{r.notes && <span className="block text-xs font-normal text-[var(--text-secondary)]">{r.notes}</span>}</div>
                     <div className={`text-xs font-semibold tabular-nums ${occ.length > r.capacity ? 'text-[var(--status-late)]' : 'text-[var(--text-secondary)]'}`}>{occ.length}/{r.capacity}</div>
                   </div>
+                  )}
                   <ul className="space-y-1.5">
                     {occ.map((o) => (
                       <li key={o.id} className="flex items-center justify-between gap-2 text-sm bg-[var(--bg-surface)] rounded-lg px-3 py-2">
@@ -205,7 +245,10 @@ export default function AdminRoomsPage() {
                     <option value="">{full ? (isAr ? '+ إضافة (الغرفة ممتلئة)' : '+ Ajouter (chambre pleine)') : (isAr ? '+ إضافة شخص' : '+ Ajouter une personne')}</option>
                     {unassigned.map((m) => <option key={m.id} value={m.id}>{m.full_name || m.phone_e164}</option>)}
                   </select>
-                  <button type="button" onClick={() => removeRoom(r)} className="text-xs font-semibold text-[var(--status-late)]">{isAr ? 'حذف الغرفة' : 'Supprimer la chambre'}</button>
+                  <div className="flex gap-4">
+                    <button type="button" onClick={() => startEditRoom(r)} className="text-xs font-semibold text-[var(--accent-primary)]">{isAr ? 'تعديل الغرفة' : 'Modifier la chambre'}</button>
+                    <button type="button" onClick={() => removeRoom(r)} className="text-xs font-semibold text-[var(--status-late)]">{isAr ? 'حذف الغرفة' : 'Supprimer la chambre'}</button>
+                  </div>
                 </div>
               );
             })}
