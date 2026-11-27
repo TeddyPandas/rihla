@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
+import { createClient } from '@/lib/supabase/client';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { offlineDb, type LocalGroupSummary, type LocalZikrDef, type TimeSlot } from '@/lib/offline/db';
 import {
@@ -53,6 +55,30 @@ export default function MemberProgramPage() {
       : fesToday >= startDate && fesToday <= endDate
       ? fesToday
       : startDate;
+
+  const [lastNotif, setLastNotif] = useState<{ fr: string; ar: string } | null>(null);
+  useEffect(() => {
+    try {
+      const c = localStorage.getItem('last_notif');
+      if (c) setLastNotif(JSON.parse(c));
+    } catch {}
+    if (!navigator.onLine || !profile?.ziyaraId) return;
+    void (async () => {
+      try {
+        const { data } = await createClient()
+          .from('user_notifications')
+          .select('title_fr, title_ar')
+          .eq('ziyara_id', profile.ziyaraId)
+          .order('created_at', { ascending: false })
+          .limit(1);
+        if (data && data[0]) {
+          const v = { fr: data[0].title_fr, ar: data[0].title_ar };
+          setLastNotif(v);
+          localStorage.setItem('last_notif', JSON.stringify(v));
+        }
+      } catch {}
+    })();
+  }, [profile?.ziyaraId]);
 
   const [activeCard, setActiveCard] = useState<CardView | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -199,29 +225,61 @@ export default function MemberProgramPage() {
 
   return (
     <div className="space-y-5 pb-6">
-      <section className="rounded-[20px] bg-[var(--hero-bg)] text-[var(--hero-text)] p-5 space-y-3">
-        <div className="text-sm font-semibold text-[var(--hero-accent)]">
-          {isAr ? 'تقدمي في هذا اليوم' : 'Ma progression du jour'}
-        </div>
-        <div className="flex items-baseline justify-between">
-          <span className="text-lg font-semibold tabular-nums">
-            {totals.count > 0
-              ? isAr
-                ? `${totals.completed} من ${totals.count} مكتمل`
-                : `${totals.completed} sur ${totals.count} terminé${totals.completed > 1 ? 's' : ''}`
-              : isAr
-              ? 'لا أهداف'
-              : 'Aucun objectif'}
-          </span>
-          <span className="text-3xl font-semibold tabular-nums">
+      <div className="grid grid-cols-2 gap-3">
+        <section className="rounded-[20px] bg-[var(--hero-bg)] text-[var(--hero-text)] p-4 flex flex-col justify-between gap-2 min-h-[116px]">
+          <div className="text-sm font-semibold text-[var(--hero-accent)]">
+            {isAr ? 'تقدمي' : 'Ma progression'}
+          </div>
+          <div className="text-4xl font-semibold tabular-nums leading-none">
             {heroPct}
             {isAr ? '٪' : ' %'}
+          </div>
+          <div>
+            <div className="text-sm tabular-nums mb-1.5">
+              {totals.count > 0
+                ? isAr
+                  ? `${totals.completed} من ${totals.count} مكتمل`
+                  : `${totals.completed} sur ${totals.count} terminé${totals.completed > 1 ? 's' : ''}`
+                : isAr
+                ? 'لا أهداف'
+                : 'Aucun objectif'}
+            </div>
+            <div className="h-2.5 rounded-full bg-white/15 overflow-hidden">
+              <div className="h-full rounded-full bg-[var(--hero-accent)] transition-all duration-300" style={{ width: `${heroPct}%` }} />
+            </div>
+          </div>
+        </section>
+        <Link
+          href="/informations"
+          className="rounded-[20px] border-2 border-[var(--accent-gold)] bg-[var(--bg-elevated)] p-4 flex flex-col justify-between gap-2 min-h-[116px]"
+        >
+          <span className="text-sm font-semibold text-[var(--accent-gold-text)]">
+            {isAr ? 'معلومات' : 'Informations'}
           </span>
-        </div>
-        <div className="h-2.5 rounded-full bg-white/15 overflow-hidden">
-          <div className="h-full rounded-full bg-[var(--hero-accent)] transition-all duration-300" style={{ width: `${heroPct}%` }} />
-        </div>
-      </section>
+          <span className="flex items-center gap-2">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" /><path d="M12 11v6" /><circle cx="12" cy="7.6" r=".6" fill="currentColor" />
+            </svg>
+            <span className="text-base font-bold leading-tight">
+              {isAr ? 'البرنامج، الفنادق، غرفتي' : 'Programme, hôtels, ma chambre'}
+            </span>
+          </span>
+          <span className="text-xs text-[var(--text-secondary)]">{isAr ? 'المس للفتح' : 'Touchez pour ouvrir'}</span>
+        </Link>
+      </div>
+
+      <Link
+        href="/notifications"
+        className="min-h-14 rounded-2xl border-[1.5px] border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 flex items-center gap-3"
+      >
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent-gold-text)" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15L6 17z" /><path d="M10 21a2 2 0 0 0 4 0" />
+        </svg>
+        <span className="flex-1 text-base font-semibold leading-snug truncate">
+          {lastNotif ? (isAr ? lastNotif.ar : lastNotif.fr) : isAr ? 'التنبيهات' : 'Mes notifications'}
+        </span>
+        <span aria-hidden="true" className="text-[var(--text-secondary)]">›</span>
+      </Link>
 
       <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
         {stayDates.map((d, idx) => {
