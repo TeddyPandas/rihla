@@ -13,6 +13,8 @@ interface InfoRow {
 }
 
 const cacheKey = (zid: string) => `ziyara_info_${zid}`;
+const roomsKey = (zid: string) => `ziyara_rooms_${zid}`;
+interface MyRoom { hotel: string; room_label: string; notes: string | null; roommates: string[] }
 
 export default function InformationsPage() {
   const { lang } = useAppShell();
@@ -21,6 +23,7 @@ export default function InformationsPage() {
   const zid = profile?.ziyaraId;
 
   const [rows, setRows] = useState<InfoRow[]>([]);
+  const [myRooms, setMyRooms] = useState<MyRoom[]>([]);
   const [loading, setLoading] = useState(true);
   const [fromCache, setFromCache] = useState(false);
   const [tab, setTab] = useState<'programme' | 'infos'>('programme');
@@ -45,6 +48,18 @@ export default function InformationsPage() {
           try { localStorage.setItem(cacheKey(zid), JSON.stringify(data)); } catch { /* ignore */ }
         }
       } catch { /* hors-ligne : on garde le cache */ }
+      try {
+        const cachedRooms = localStorage.getItem(roomsKey(zid));
+        if (cachedRooms && !cancelled) setMyRooms(JSON.parse(cachedRooms) as MyRoom[]);
+      } catch { /* ignore */ }
+      try {
+        const { data, error } = await createClient().rpc('my_rooms', { p_ziyara_id: zid });
+        if (error) throw error;
+        if (!cancelled && data) {
+          setMyRooms(data as MyRoom[]);
+          try { localStorage.setItem(roomsKey(zid), JSON.stringify(data)); } catch { /* ignore */ }
+        }
+      } catch { /* hors-ligne */ }
       if (!cancelled) setLoading(false);
     })();
     return () => { cancelled = true; };
@@ -71,6 +86,23 @@ export default function InformationsPage() {
         <button type="button" onClick={() => setTab('programme')} className={tabBtn(tab === 'programme')}>{isAr ? 'برنامج الرحلة' : 'Programme du voyage'}</button>
         <button type="button" onClick={() => setTab('infos')} className={tabBtn(tab === 'infos')}>{isAr ? 'معلومات عملية' : 'Infos pratiques'}</button>
       </div>
+
+      {myRooms.length > 0 && (
+        <section className="space-y-2.5">
+          {myRooms.map((r) => (
+            <div key={r.hotel} className="rounded-2xl bg-[var(--hero-bg)] text-[var(--hero-text)] p-4 space-y-1">
+              <div className="text-xs font-semibold text-[var(--hero-accent)]">{isAr ? 'غرفتي' : 'Ma chambre'} · {r.hotel}</div>
+              <div className="text-3xl font-bold tabular-nums">{r.room_label}</div>
+              <div className="text-sm opacity-90">
+                {r.roommates.length > 0
+                  ? (isAr ? `مع: ${r.roommates.join('، ')}` : `Avec : ${r.roommates.join(', ')}`)
+                  : (isAr ? 'وحدك في الغرفة' : 'Seul(e) dans la chambre')}
+              </div>
+              {r.notes && <div className="text-xs opacity-80">{r.notes}</div>}
+            </div>
+          ))}
+        </section>
+      )}
 
       {fromCache && (
         <p className="text-xs text-[var(--text-secondary)] px-1">{isAr ? 'نسخة محفوظة على هاتفك (بدون إنترنت).' : 'Version enregistrée sur votre téléphone (hors connexion).'}</p>

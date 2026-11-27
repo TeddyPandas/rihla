@@ -18,6 +18,7 @@ export default function CheikhAdminLayout({ children }: { children: React.ReactN
     { href: '/admin/redistribute', label: isAr ? 'إعادة التوزيع' : 'Redistribution' },
     { href: '/admin/suivi', label: isAr ? 'المتابعة العامة' : 'Suivi global' },
     { href: '/admin/informations', label: isAr ? 'المعلومات' : 'Informations' },
+    { href: '/admin/chambres', label: isAr ? 'الغرف' : 'Chambres' },
     { href: '/admin/rappels', label: isAr ? 'تذكيرات' : 'Rappels' },
     { href: '/admin/analytics', label: isAr ? 'الإحصائيات' : 'Graphiques' },
   ];
